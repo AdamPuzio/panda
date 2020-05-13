@@ -48,3 +48,5 @@ app
 * Create a generator script to build a project using `npx`
 * Build custom configuration logic
 * Implement authorization system
+* Implement alternative authentication strategies
+* Create a `panda-sample` repo
