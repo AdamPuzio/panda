@@ -22,12 +22,12 @@ Out-of-the-box, you'll be able to start creating your site with the following bu
 
 Install Panda as an NPM module
 ```bash
-npm install AdamPuzio/panda
+npm install --save AdamPuzio/panda
 ```
 
 Run Panda
 ```js
- npm run panda
+ npx panda
 ```
 
 That's it. You now have a working instance of Panda.

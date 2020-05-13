@@ -3,27 +3,28 @@
   "description": "Panda Rapid Prototype Framework",
   "main": "./panda",
   "scripts": {
-    "dev": "moleculer-runner --env --hot app/services",
-    "devr": "moleculer-runner --env --repl --hot app/services",
+    "panda": "panda --env --hot app/services",
+    "panda-repl": "panda --env --repl --hot app/services",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "bin": {
-    "panda-runner": "./bin/runner.js"
+    "panda": "./bin/runner.js"
   },
   "author": "Adam T. Puzio <adam@puzio.me>",
   "contributors": [],
   "version": "0.0.1",
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "https://github.com/AdamPuzio/panda.git"
   },
   "bugs": {
-    "url": ""
+    "url": "https://github.com/AdamPuzio/panda/issues"
   },
   "readmeFilename": "README.md",
-  "homepage": "",
+  "homepage": "https://github.com/AdamPuzio/panda",
+  "license": "MIT",
   "engines": {
-    "node": ">= 7.6.x"
+    "node": ">= 10.x.x"
   },
   "devDependencies": {},
   "dependencies": {
