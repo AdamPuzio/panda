@@ -1,0 +1,156 @@
+.label {
+  margin-bottom: 0.5rem;
+}
+
+
+
+
+
+.list-group-item {
+  user-select: none;
+}
+
+.list-group input[type="checkbox"] {
+  display: none;
+}
+
+.list-group input[type="checkbox"] + .list-group-item {
+  cursor: pointer;
+}
+
+.list-group input[type="checkbox"] + .list-group-item:before {
+  content: "\2713";
+  color: transparent;
+  font-weight: bold;
+  margin-right: 1em;
+}
+
+.list-group input[type="checkbox"]:checked + .list-group-item {
+  background-color: #0275D8;
+  color: #FFF;
+}
+
+.list-group input[type="checkbox"]:checked + .list-group-item:before {
+  color: inherit;
+}
+
+.list-group input[type="radio"] {
+  display: none;
+}
+
+.list-group input[type="radio"] + .list-group-item {
+  cursor: pointer;
+}
+
+.list-group input[type="radio"] + .list-group-item:before {
+  content: "\2022";
+  color: transparent;
+  font-weight: bold;
+  margin-right: 1em;
+}
+
+.list-group input[type="radio"]:checked + .list-group-item {
+  background-color: #0275D8;
+  color: #FFF;
+}
+
+.list-group input[type="radio"]:checked + .list-group-item:before {
+  color: inherit;
+}
+
+
+
+
+.list-group.section-employment-history {
+  flex-direction: row;
+  flex-wrap: wrap;
+  text-align: center;
+}
+
+.list-group.section-employment-history .list-group-item {
+  flex: 1;
+  margin: 5px;
+}
+
+.list-group.section-employment-history input[type="checkbox"] + .list-group-item:before {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+.list-group.section-employment-history input[type="checkbox"]:checked + .list-group-item img {
+  -webkit-filter: brightness(1000%);
+  filter: brightness(1000%);
+}
+
+/* Yes/No Switch */
+.yesno-switch {
+  position: relative;
+  display: inline-block;
+  width: 74px;
+  height: 34px;
+}
+
+.yesno-switch input {display:none;}
+
+.yesno-switch .slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ca2222;
+  -webkit-transition: .4s;
+  transition: .4s;
+   border-radius: 34px;
+}
+
+.yesno-switch .slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+  border-radius: 50%;
+}
+
+.yesno-switch input:checked + .slider {
+  background-color: #2ab934;
+}
+
+.yesno-switch input:focus + .slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+.yesno-switch input:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(40px);
+}
+
+/*------ ADDED CSS ---------*/
+.yesno-switch .slider:after
+{
+ content:'NO';
+ color: white;
+ display: block;
+ position: absolute;
+ transform: translate(-50%,-50%);
+ top: 50%;
+ left: 65%;
+ font-size: 10px;
+ font-family: Verdana, sans-serif;
+}
+
+.yesno-switch input:checked + .slider:after
+{  
+  content:'YES';
+  left: 35%;
+}
+
+/*--------- END --------*/
