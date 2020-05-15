@@ -17,7 +17,7 @@ module.exports = {
     pandaBaseDir: path.join(__dirname, '..'),
     appDir: Panda.cfg.APP_PATH,
     routesDir: path.join(Panda.cfg.APP_PATH, 'routes'),
-    tplDir: path.join(Panda.cfg.APP_PATH, 'templates'),
+    tplDir: path.join(Panda.cfg.APP_PATH, 'views'),
     publicDir: path.join(Panda.cfg.APP_PATH, 'public')
   },
   
@@ -67,7 +67,7 @@ module.exports = {
     await Panda.Auth.initPassport(app, broker)
 
     // set up the view engine
-    const pandaTplDir = path.join(pandaDir, 'templates')
+    const pandaTplDir = path.join(pandaDir, 'views')
     const viewPaths = [this.settings.tplDir, pandaTplDir]
     app.set('view engine', 'ejs')
     app.set('views', viewPaths)
