@@ -86,7 +86,7 @@ app
   public
   routes
   services
-  templates
+  views
 ```
 
 ## Authentication
@@ -100,7 +100,6 @@ app
 * Implement authorization system
 * Implement alternative authentication strategies
 * Create a `panda-sample` repo
-* Change `templates` directory to `views` to match Express
 * Add hooks for middleware
 * Allow for .env files to be used for configuration
 
