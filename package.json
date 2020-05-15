@@ -8,7 +8,8 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "bin": {
-    "panda": "./bin/runner.js"
+    "panda": "./bin/runner.js",
+    "panda-create": "./bin/create.js"
   },
   "author": "Adam T. Puzio <adam@puzio.me>",
   "contributors": [],
@@ -47,6 +48,7 @@
     "moleculer-web": "^0.9.1",
     "moment": "^2.24.0",
     "mongoose": "^5.9.11",
+    "ncp": "^2.0.0",
     "passport": "^0.4.1",
     "passport-local": "^1.0.0"
   }
