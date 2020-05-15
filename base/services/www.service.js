@@ -5,6 +5,7 @@ const { PandaError, PandaClientError, PageNotFoundError, ValidationError, Unauth
 const ApiGateway = require('moleculer-web')
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
+const fileUpload = require('express-fileupload')
 const path = require('path')
 const cors = require('cors')
 
@@ -59,6 +60,7 @@ module.exports = {
     app.use(cookieParser())
     app.use(bodyParser.urlencoded({ extended : false }))
     app.use(bodyParser.json())
+    app.use(fileUpload())
     app.use(Panda.express.static(path.join(appDir, 'public')))
     app.use('/~panda', Panda.express.static(path.join(pandaDir, 'public')))
     
