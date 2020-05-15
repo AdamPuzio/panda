@@ -46,6 +46,12 @@ npx panda
 
 That's it. You now have a working instance of Panda.
 
+If you would like Panda to create an `/app` directory with all of the base folders, you can run the following:
+
+```bash
+npx panda-create
+```
+
 ### Configuration
 
 Panda doesn't need any configuring to run, but you can create a `panda.config.js` or `panda.config.json` file in your main directory.
@@ -95,7 +101,6 @@ app
 
 ### Code Tasks
 
-* Create a generator script to build a project using `npx`
 * Build custom configuration logic
 * Implement authorization system
 * Implement alternative authentication strategies
