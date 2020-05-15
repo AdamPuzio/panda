@@ -9,6 +9,7 @@ Here are some of the base features you'll have out-of-the-box:
 * Moleculer microservices API 
 * EJS templating engine
 * An authentication system, complete with register, login and logout routes
+* Integration with MongoDB
 
 ## Custom Capabilities
 
@@ -58,17 +59,25 @@ Panda doesn't need any configuring to run, but you can create a `panda.config.js
 
 Here are the potential values, along with defaults:
 
-```json
+```js
 {
+  // the MongoDB connection string
   MONGO_URI: 'mongodb://localhost/panda',
+  // what to name your JWT token (should be changed for production)
   JWT_TOKEN: 'panda',
   
+  // the root path of the /app directory
   APP_PATH: 'app',
   
+  // site variables (these will be available within views)
   site: {
+    // site name (used for navigation, page titles, etc.)
     name: 'Panda',
+    // site description
     desc: '',
+    // site logo (not currently being used)
     logo: null,
+    // files to include in the header and footer 
     includes: {
       header: {
         js: [],
@@ -79,6 +88,7 @@ Here are the potential values, along with defaults:
         css: []
       }
     },
+    // navigation elements to use in the primary nav
     nav: []
   }
 }
@@ -97,6 +107,32 @@ app
 
 ## Authentication
 
+## Dev Notes
+
+### Panda Development
+
+When working on the core Panda library (not an application that uses Panda), install Panda in a local directory:
+
+```bash
+mkdir lib
+cd lib
+git clone git@github.com:AdamPuzio/panda.git
+cd ../
+```
+
+Next, update your app's `package.json` file to reflect that it should use the local directory instead of the NPM version in `node_modules`:
+
+```js
+{
+  ...
+  "dependencies": {
+    "panda": "file:./lib/panda"
+  }
+}
+```
+
+Finally, run `npm install` to install all Panda dependencies and ensure that it's referencing the local copy. Now, all changes made to the code in `lib/panda` will be reflected immediately. 
+
 ## ToDo
 
 ### Code Tasks
@@ -107,10 +143,12 @@ app
 * Create a `panda-sample` repo
 * Add hooks for middleware
 * Allow for .env files to be used for configuration
+* Implement hooks for metatags from custom config
 
 ### Documentation Tasks
 
 * Error classes
 
 ## License
+
 Panda is available under the [MIT license](https://tldrlegal.com/license/mit-license).
