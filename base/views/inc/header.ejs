@@ -1,16 +1,26 @@
 <%
-if(typeof title === 'undefined') title = ''
+if(typeof title === 'undefined') title = site.title
+if(typeof js === 'undefined') js = []
+if(typeof css === 'undefined') css = []
+js = site.includes.header.js.concat(js)
+css = site.includes.header.css.concat(css)
 %><!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
-    <title><%-site.title%></title>
+    <title><%-title%></title>
 
     <!-- Bootstrap core CSS -->
-<link href="/~panda/assets/lib/bootstrap-4.4.1-dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
-<link href="/~panda/assets/css/site.css" rel="stylesheet" />
+    <link href="/~panda/assets/lib/bootstrap-4.4.1-dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+    <link href="/~panda/assets/css/site.css" rel="stylesheet" />
+    <% css.forEach(function(item){ %>
+    <link href="<%-item%>" rel="stylesheet" />
+    <% }) %>
+    <% js.forEach(function(item){ %>
+    <script type="text/javascript" src="<%-item%>"></script>
+    <% }) %>
   </head>
   <%- include('/inc/nav') %>
   
