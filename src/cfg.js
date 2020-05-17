@@ -12,6 +12,8 @@ let defaultVals = {
   
   APP_PATH: path.join(process.cwd(), 'app'),
   
+  custom: {},
+  
   site: {
     name: 'Panda',
     desc: '',
