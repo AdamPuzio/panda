@@ -4,8 +4,9 @@ const _ = require('lodash')
 const Core = require('./core')
 const path = require('path')
 const fs = require('fs')
+const dotenv = require('dotenv')
 
-
+// default config values
 let defaultVals = {
   MONGO_URI: 'mongodb://localhost/panda',
   JWT_TOKEN: 'panda',
@@ -33,6 +34,7 @@ let defaultVals = {
 }
 let cfg = _.defaults({}, defaultVals)
 
+// load panda.config file (if exists)
 let filePath
 if (!filePath && fs.existsSync(path.resolve(process.cwd(), "panda.config.js"))) {
   filePath = path.resolve(process.cwd(), "panda.config.js")
@@ -61,9 +63,16 @@ if(filePath) {
   cfg = _.merge(cfg, localCfg)
 }
 
+// load .env file (if exists)
+let dcfg = dotenv.config().parsed
+cfg = _.merge(cfg, dcfg)
+
+// merge values from environmental parameters
+// NOTE: only takes the variables that currently exist in the config object
 let envVars = _.pick(process.env, Object.keys(cfg))
 cfg = _.merge(cfg, envVars)
 
+// getter/setter handler so no exception is ever thrown
 var handler = {
   get: function(target, name){
     if(typeof name === 'symbol')
