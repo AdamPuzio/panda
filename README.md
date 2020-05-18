@@ -55,7 +55,16 @@ npx panda-create
 
 ### Configuration
 
-Panda doesn't need any configuring to run, but you can create a `panda.config.js` or `panda.config.json` file in your main directory.
+Panda doesn't require any configuring to run, but it does allow for multi-tiered configuration. The order of implementation is:
+* `panda.config.js` or `panda.config.json` file
+* `.env` file
+* environmental variables in your command
+
+Note: values implemented later override previous values
+
+#### panda.config
+
+For the Panda configuration file, you can create a `panda.config.js` or `panda.config.json` file in your main directory.
 
 Here are the potential values, along with defaults:
 
@@ -96,6 +105,8 @@ Here are the potential values, along with defaults:
 
 ## Application Directory Structure
 
+The standard directory structure for an application is pretty straight forward:
+
 ```
 package.json
 app
@@ -104,6 +115,13 @@ app
   services
   views
 ```
+
+You can adjust the `app` directory by setting the `APP_PATH` variable in your configuration. For now, the sub-directory structure is static. 
+
+* `public`: the public directory for static files (images, js, css, etc.)
+* `routes`: the directory for your Express routes
+* `services`: the directory for your Moleculer services
+* `views`: the directory for your view (.ejs) files
 
 ## Authentication
 
@@ -142,8 +160,6 @@ Finally, run `npm install` to install all Panda dependencies and ensure that it'
 * Implement alternative authentication strategies
 * Create a `panda-sample` repo
 * Add hooks for middleware
-* Allow for .env files to be used for configuration
-* Implement hooks for metatags from custom config
 
 ### Documentation Tasks
 
