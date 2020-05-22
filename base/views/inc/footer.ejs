@@ -1,8 +1,9 @@
 <%
-if(typeof js === 'undefined') js = []
-if(typeof css === 'undefined') css = []
-js = site.includes.footer.js.concat(js)
-css = site.includes.footer.css.concat(css)
+let jsFiles = locals.js || []
+jsFiles = jsFiles.concat(site.includes.footer.js)
+
+let cssFiles = locals.css || []
+cssFiles = cssFiles.concat(site.includes.footer.css)
 %>
     
     <script src="/~panda/assets/js/jquery-3.4.1.min.js"></script>
@@ -11,10 +12,10 @@ css = site.includes.footer.css.concat(css)
     <!--<script type="text/javascript" src="/assets/lib/panda/panda.js"></script>-->
     <script type="text/javascript" src="/~panda/assets/js/site.js"></script>
 
-    <% css.forEach(function(item){ %>
+    <% cssFiles.forEach(function(item){ %>
     <link href="<%-item%>" rel="stylesheet" />
     <% }) %>
-    <% js.forEach(function(item){ %>
+    <% jsFiles.forEach(function(item){ %>
     <script type="text/javascript" src="<%-item%>"></script>
     <% }) %>
     
