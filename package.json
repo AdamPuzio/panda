@@ -50,6 +50,7 @@
     "moleculer-web": "^0.9.1",
     "moment": "^2.24.0",
     "mongoose": "^5.9.11",
+    "ms": "^2.1.2",
     "ncp": "^2.0.0",
     "passport": "^0.4.1",
     "passport-local": "^1.0.0"

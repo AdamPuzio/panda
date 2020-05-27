@@ -3,6 +3,7 @@ const _ = require('lodash')
 const express = require('express')
 const passport = require('passport')
 const jwt = require('jsonwebtoken')
+const ms = require('ms')
 
 const router = express.Router()
 
@@ -19,11 +20,7 @@ router.post('/login', async function(req, res, next) {
     if(err) return next(err)
     
     if(user) {
-      let u = _.pick(user, ['_id', 'email'])
-      const token = jwt.sign(JSON.stringify(u), Panda.cfg.JWT_TOKEN)
-      res.cookie('token', token, {
-        expires: new Date(Date.now() + 8 * 3600000)
-      })
+      Panda.Auth.setToken(null, user, res)
       return res.redirect('/')
     }
     
@@ -32,7 +29,7 @@ router.post('/login', async function(req, res, next) {
 })
 
 router.get('/logout', async function(req, res, next) {
-  res.clearCookie('token')
+  res.clearCookie(Panda.cfg.session.cookie_name)
   res.redirect('/')
 })
 

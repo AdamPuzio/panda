@@ -78,6 +78,16 @@ Here are the potential values, along with defaults:
   // the root path of the /app directory
   APP_PATH: 'app',
   
+  // session information
+  session: {
+    // the name of the cookie to set
+    cookie_name: 'token',
+    // how long should the idle timeout be
+    idle_timeout: '24h',
+    // how long should the token live for, regardless of activity
+    token_expiration: '30d'
+  },
+  
   // site variables (these will be available within views)
   site: {
     // site name (used for navigation, page titles, etc.)

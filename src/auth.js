@@ -1,8 +1,10 @@
 'use strict'
 
+const _ = require('lodash')
 const Core = require('./core')
 const cfg = require('./cfg')
 const path = require('path')
+const ms = require('ms')
 const jwt = require('jsonwebtoken')
 const passport = require('passport')
 const LocalStrategy = require('passport-local')
@@ -32,8 +34,9 @@ Auth.initPassport = async function(app, broker) {
 }
 
 Auth.middleware = function(app) {
+  let scope = this
   return async function(req, res, next) {
-    const token = req.cookies.token || ''
+    const token = req.cookies[cfg.session.cookie_name]
     try {
       if (!token) return next()
 
@@ -42,6 +45,8 @@ Auth.middleware = function(app) {
         const decrypt = await jwt.verify(token, key)
         let user = await app.broker.call('account.getUser', { email: decrypt.email })
         req.user = user
+        
+        scope.setToken(token, user, res)
       } catch(e) {
         console.log('ERROR WITH LOCAL AUTH')
         console.log(e)
@@ -51,6 +56,16 @@ Auth.middleware = function(app) {
       return res.status(500).json(err.toString())
     }
   }
+}
+
+Auth.setToken = async function(token, user, res) {
+  if(!user || !res) return false
+  let u = _.pick(user, ['_id', 'email'])
+  if(!token) token = jwt.sign(u, cfg.JWT_TOKEN, { expiresIn: ms(cfg.session.token_expiration) })
+  res.cookie(cfg.session.cookie_name, token, {
+    expires: new Date(Date.now() + ms(cfg.session.idle_timeout))
+  })
+  return true
 }
 
 Auth.strategies = {}

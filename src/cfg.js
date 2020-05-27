@@ -13,6 +13,12 @@ let defaultVals = {
   
   APP_PATH: path.join(process.cwd(), 'app'),
   
+  session: {
+    cookie_name: 'token',
+    idle_timeout: '24h',
+    token_expiration: '30d'
+  },
+  
   custom: {},
   
   site: {
