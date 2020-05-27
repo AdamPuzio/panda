@@ -13,6 +13,12 @@ let defaultVals = {
   
   APP_PATH: path.join(process.cwd(), 'app'),
   
+  authentication: {
+    registration_confirmation: false,
+    registration_redirect: '/',
+    login_redirect: '/'
+  },
+  
   session: {
     cookie_name: 'token',
     idle_timeout: '24h',
