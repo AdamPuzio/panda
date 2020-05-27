@@ -1,7 +1,9 @@
 <%
 let jsFiles = locals.js || []
+jsFiles = jsFiles.concat(site.includes.header.js)
 
 let cssFiles = locals.css || []
+cssFiles = cssFiles.concat(site.includes.header.css)
 
 if(typeof title === 'undefined') title = site.title
 %><!doctype html>
@@ -12,6 +14,9 @@ if(typeof title === 'undefined') title = site.title
     <meta name="description" content="">
     <title><%-title%></title>
 
+    <!-- Bootstrap core CSS -->
+    <link href="/~panda/assets/lib/bootstrap-4.4.1-dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+    <link href="/~panda/assets/css/site.css" rel="stylesheet" />
     <% cssFiles.forEach(function(item){ %>
     <link href="<%-item%>" rel="stylesheet" />
     <% }) %>
