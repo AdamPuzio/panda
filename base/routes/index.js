@@ -1,4 +1,4 @@
-const Panda = require('panda')
+const Panda = require('../../')
 const router = Panda.express.Router()
 
 

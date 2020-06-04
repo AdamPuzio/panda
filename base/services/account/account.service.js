@@ -1,5 +1,5 @@
 const _ = require('lodash')
-const { PandaError, PandaClientError, PageNotFoundError, ValidationError, UnauthorizedError, ForbiddenError } = require('panda').Errors
+const { PandaError, PandaClientError, PageNotFoundError, ValidationError, UnauthorizedError, ForbiddenError } = require('../../../').Errors
 const UserModel = require('./models/user')
 const bcrypt = require('bcrypt')
 

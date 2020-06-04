@@ -1,4 +1,4 @@
-const Panda = require('panda')
+const Panda = require('../../')
 const express = Panda.express
 const passport = require('passport')
 const jwt = require('jsonwebtoken')
