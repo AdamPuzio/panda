@@ -37,7 +37,7 @@ npm init
 
 Install Panda as an NPM module
 ```bash
-npm install --save AdamPuzio/panda
+npm install --save panda
 ```
 
 Run Panda
