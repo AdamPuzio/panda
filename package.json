@@ -13,7 +13,7 @@
   },
   "author": "Adam T. Puzio <adam@puzio.me>",
   "contributors": [],
-  "version": "0.0.1",
+  "version": "0.2.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/AdamPuzio/panda.git"
@@ -39,11 +39,11 @@
     "es6-error": "^4.1.1",
     "express": "^4.17.1",
     "express-fileupload": "^1.1.7-alpha.3",
-    "express-jwt": "^5.3.3",
+    "express-jwt": ">=6.0.0",
     "express-session": "^1.17.1",
     "glob": "^7.1.6",
     "jsonwebtoken": "^8.5.1",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.19",
     "moleculer": "^0.14.6",
     "moleculer-db": "^0.8.7",
     "moleculer-db-adapter-mongoose": "^0.8.4",
