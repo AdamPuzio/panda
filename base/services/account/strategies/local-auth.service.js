@@ -1,19 +1,23 @@
 const _ = require('lodash')
-const Panda = require('../../../')
-const { PandaError, PandaClientError, PageNotFoundError, ValidationError, UnauthorizedError, ForbiddenError } = require('../../../').Errors
-const UserModel = require('./models/user')
+const Panda = require('panda')
+const { PandaError, PandaClientError, PageNotFoundError, ValidationError, UnauthorizedError, ForbiddenError } = require('panda').Errors
+const UserModel = require('../models/user')
 const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
+const cfg = Panda.cfg
+const ms = require('ms')
 
 module.exports = {
-  name: 'account',
+  name: 'auth-strategy-local',
   
   mixins: [],
   
   settings: {
-    strategy: Panda.cfg.auth_service
+    
   },
   
   actions: {
+    
     register: {
       params: {
         email: { type: "email", optional: false },
@@ -25,7 +29,7 @@ module.exports = {
       async handler(ctx) {
         const params = Object.assign({}, ctx.params)
         
-        if(params.passwordConfirm && params.passwordConfirm !== params.password)
+        if(!params.passwordConfirm || params.passwordConfirm !== params.password)
           throw new PandaClientError('Passwords do not match', 400, 'ERR_PASSWORD_MISMATCH')
         
         let found = await this.getUserByEmail(params.email)
@@ -39,16 +43,15 @@ module.exports = {
       }
     },
     
-    authenticate: {
+    login: {
       params: {
-        email: { type: "string", optional: false },
+        username: { type: 'string', optional: false },
+        //email: { type: "string", optional: false },
         password: { type: "string", optional: true },
-        token: { type: "string", optional: true }
+        //token: { type: "string", optional: true }
       },
       async handler(ctx) {
-        const svc = Panda.cfg.auth_service
-        const user = await Panda.call(svc, ctx.params)
-        //const user = await this.getUserByEmail(ctx.params.email)
+        const user = await this.getUserByEmail(ctx.params.username)
         
         if (!user)
           throw new PandaClientError('User Not Found', 400, "ERR_USER_NOT_FOUND")
@@ -56,34 +59,36 @@ module.exports = {
         if (!(await bcrypt.compare(ctx.params.password, user.password)))
           throw new PandaClientError('Incorrect Password', 400, "ERR_WRONG_PASSWORD")
         
-        return user
+        let token = await this.generateToken(user)
+        
+        return {user, token}
       }
     },
     
-    getUser: {
+    verify: {
       params: {
-        email: { type: "string", optional: false }
+        token: { type: 'string', optional: false }
       },
       async handler(ctx) {
-        let user = await this.getUserByEmail(ctx.params.email)
-        if(user && user.password) user.password = undefined
-        return user
-      }
-    },
-    
-    getUserById: {
-      params: {
-        id: { type: "string", optional: false }
-      },
-      async handler(ctx) {
-        let user = await this.getUserById(ctx.params.id)
-        return user
+        const key = cfg.JWT_TOKEN
+        const token = ctx.params.token
+        
+        try {
+          const decrypt = await jwt.verify(token, key)
+          //let user = await Panda.call('account.getUser', { email: decrypt.email })
+          let user = await this.getUserById(decrypt._id)
+          return user
+        } catch(e) {
+          throw new PandaClientError('User Not Found', 400, "ERR_USER_NOT_FOUND")
+        }
       }
     }
+    
   },
   
   methods: {
     getUserByEmail: async function(email) {
+      //const UserModel = Panda.model('User')
       let query = { email: email }
       try {
         let user = await UserModel.findOne(query)
@@ -95,14 +100,21 @@ module.exports = {
     },
     
     getUserById: async function(id) {
-      let query = { _id: ObjectId(id) }
       try {
+        let query = { _id: Panda.ObjectId(id) }
         let user = await UserModel.findOne(query)
         return user
       } catch (e) {
         console.log(e)
         throw new PandaClientError("Unknown User error", 400, "ERR_USER_UNKNOWN")
       }
+    },
+    
+    generateToken: async function(user) {
+      //let u = _.pick(user, ['_id', 'email'])
+      let u = _.pick(user, ['_id'])
+      let token = jwt.sign(u, cfg.JWT_TOKEN, { expiresIn: ms(cfg.session.token_expiration) })
+      return token
     }
   }
 }

@@ -12,7 +12,10 @@ router.get('/about', function(req, res) {
   res.send('About us')
 })
 
-router.get('/me', function(req, res) {
+router.get('/me', Panda.Auth.auth.private, function(req, res) {
+  console.log('USER:')
+  console.log(res.user)
+  if(!res.user) return res.send('User not logged in')
   res.send(JSON.stringify(res.user))
 })
 

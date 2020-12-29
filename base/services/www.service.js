@@ -47,7 +47,7 @@ module.exports = {
   },
 
   async created() {
-    const app = Panda.express()
+    const app = Panda.app()
     const appDir = this.settings.appDir
     const pandaDir = this.settings.pandaBaseDir
 
@@ -64,7 +64,7 @@ module.exports = {
     app.use(Panda.express.static(path.join(appDir, 'public')))
     app.use('/~panda', Panda.express.static(path.join(pandaDir, 'public')))
     
-    app.use('/api', this.express())
+    //app.use('/api', this.express())
     
     await Panda.Auth.initPassport(app, broker)
 
@@ -79,7 +79,7 @@ module.exports = {
     await Panda.App.initRoutes(app, this.settings.routesDir)
     
     // initialize default routes
-    await Panda.App.initRoutes(app, path.join(pandaDir, 'routes'))
+    if(Panda.cfg.USE_BASE) await Panda.App.initRoutes(app, path.join(pandaDir, 'routes'))
 
     app.use(function (req, res, next) {
       res.status(404).send('404')

@@ -13,6 +13,11 @@ let defaultVals = {
   
   APP_PATH: path.join(process.cwd(), 'app'),
   
+  // use the built-in routes and services
+  USE_BASE: true,
+  
+  auth_service: 'auth-strategy-local',
+  auth_config: {},
   authentication: {
     registration_confirmation: false,
     registration_redirect: '/',

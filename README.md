@@ -133,7 +133,26 @@ You can adjust the `app` directory by setting the `APP_PATH` variable in your co
 * `services`: the directory for your Moleculer services
 * `views`: the directory for your view (.ejs) files
 
-## Authentication
+## Development
+
+### Routes
+
+When creating routes in `/app/routes`, routing prefixes are assigned based on directory structure. Filenames within the directories don't matter. For example, with the following directory structure:
+
+```
+app
+  routes
+    index.js
+    foo
+      index.js
+      bar.js
+```
+
+Routes within `/app/routes/index.js` will automatically be prefixed with `/`, so they'll be available at the top level. Any routes created within `/app/routes/foo/index.js` or `/app/routes/foo/bar.js` will be prefixed with `/foo/`. The filenames `index` and `bar` have no bearing on routes.
+
+### Services
+
+### Authentication
 
 ## Dev Notes
 

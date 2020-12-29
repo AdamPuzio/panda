@@ -27,7 +27,7 @@ Auth.initPassport = async function(app, broker) {
   
   app.use(function(req, res, next) {
     req.broker = broker
-    res.locals.user = req.user || null
+    res.user = res.locals.user = req.user || null
     res.locals.site = cfg.site
     next()
   })
@@ -36,7 +36,7 @@ Auth.initPassport = async function(app, broker) {
 Auth.middleware = function(app) {
   let scope = this
   return async function(req, res, next) {
-    const token = req.cookies[cfg.session.cookie_name]
+    const token = req.header('Access-Token') || req.cookies[cfg.session.cookie_name]
     try {
       if (!token) return next()
 

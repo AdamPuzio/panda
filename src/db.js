@@ -22,12 +22,14 @@ class Database {
     mongoose.connect(uri, {useNewUrlParser: true, useUnifiedTopology: true})
     
     this.mongoose = mongoose
+    this.model = mongoose.model
+    this.ObjectId = mongoose.Types.ObjectId
   }
   
 }
 
-Database.model = mongoose.model
-Database.ObjectId = mongoose.Types.ObjectId
+//Database.model = mongoose.model
+//Database.ObjectId = mongoose.Types.ObjectId
 
 const PandaDatabase = new Database()
 

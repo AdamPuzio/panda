@@ -7,6 +7,7 @@ const { ServiceBroker } = require('moleculer')
 const path = require('path')
 const util = require('util')
 const glob = util.promisify(require('glob'))
+const { PandaError, PandaClientError, PageNotFoundError, ValidationError, UnauthorizedError, ForbiddenError } = require('./errors')
 
 /**
  * App class
@@ -17,7 +18,8 @@ class App {
   
 }
 
-App.app = function(opts = {}) {
+/*App.app = function(opts = {}) {
+  console.log('TEST App.app() is called')
   opts = _.defaultsDeep({
     
   }, opts)
@@ -41,6 +43,51 @@ App.express = function() {
   this._app = app
   
   return app
+}*/
+
+App.app = function(opts = {}) {
+  console.log('TEST App.app() is called')
+  opts = _.defaultsDeep({
+    test: 'test value'
+  }, opts)
+  
+  const app = this.express()
+  //const broker = this.createBroker()
+  //const svc = this.createWebService()
+  
+  //app.broker = broker
+  //broker.app = app
+  
+  //app.use('/api', svc.express())
+  
+  //broker.start()
+  this._app = app
+  this._opts = opts
+  
+  return app
+}
+
+App.call = async function(action, params, opts) {
+  const broker = this._app.broker
+  let data = await broker.call(action, params, opts)
+  return data
+  /*try {
+    const broker = this._app.broker
+    let data = await broker.call(action, params, opts)
+    return data
+  } catch (err) {
+    console.log('ERROR on Panda.call()')
+    switch(err.type) {
+      case 'SERVICE_NOT_FOUND':
+        // let's throw a 404
+        break;
+      default:
+        
+    }
+    //console.log(err)
+    //return false
+    throw new PandaError(err)
+  }*/
 }
 
 App.createBroker = function() {

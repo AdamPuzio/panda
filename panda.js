@@ -11,8 +11,12 @@ module.exports = {
   cfg: require('./src/cfg'),
   
   model: require('./src/db').model,
+  ObjectId: require('./src/db').ObjectId,
   
   express: require('express'),
+  app: require('./src/app').app,
+  
+  call: require('./src/app').call,
 
   VERSION: require('./src/core').VERSION
 }
