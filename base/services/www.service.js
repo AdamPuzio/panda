@@ -14,6 +14,7 @@ module.exports = {
   mixins: [ApiGateway],
 
   settings: {
+    debugMode: process.env.DEBUG || false,
     port: process.env.PORT || 5000,
     pandaBaseDir: path.join(__dirname, '..'),
     appDir: Panda.cfg.APP_PATH,

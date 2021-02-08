@@ -112,7 +112,7 @@ App.createWebService = function(opts = {}) {
 App.initRoutes = async function(app, routesDir) {
   let files = await glob(path.join(routesDir, '/**/*.js'))
   files.forEach(function(file) {
-    let relpath = file.replace(routesDir, '')
+    let relpath = file.replace(routesDir.split('\\').join('/'), '')
     let p = path.dirname(relpath)
     app.use(p, require(file))
   })
