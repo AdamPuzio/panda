@@ -1,0 +1,50 @@
+{
+  "name": "panda",
+  "version": "0.3.0",
+  "description": "Panda rapid application framework",
+  "main": "./panda",
+  "scripts": {
+    "panda": "panda --env --hot app/services",
+    "style-guide": "standard",
+    "style-guide-fix": "standard --fix",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bin": {
+    "panda": "./bin/panda.js"
+  },
+  "keywords": [],
+  "author": "Adam T. Puzio <adam@puzio.me>",
+  "contributors": [],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AdamPuzio/panda.git"
+  },
+  "bugs": {
+    "url": "https://github.com/AdamPuzio/panda/issues"
+  },
+  "readmeFilename": "README.md",
+  "homepage": "https://github.com/AdamPuzio/panda",
+  "engines": {
+    "node": ">= 10.x.x"
+  },
+  "devDependencies": {
+    "mocha": "^6.0.2",
+    "standard": "*"
+  },
+  "dependencies": {
+    "@koa/cors": "^3.1.0",
+    "@koa/router": "^10.1.1",
+    "commander": "^7.1.0",
+    "glob": "^7.1.6",
+    "koa": "^2.13.1",
+    "koa-bodyparser": "^4.3.0",
+    "koa-ejs": "^4.3.0",
+    "koa-session": "^6.2.0",
+    "koa-static": "^5.0.0",
+    "moleculer": "^0.14.12",
+    "moleculer-web": "^0.9.1",
+    "ncp": "^2.0.0",
+    "winston": "^3.3.3"
+  }
+}
