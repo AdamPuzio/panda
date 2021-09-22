@@ -37,24 +37,10 @@ program
   })
 
   program
-    .command('run-multi [type]')
-    .description('')
-    .action(function(type, args) {
-      
-    })
-
-  program
-    .command('setup [type]')
-    .description('')
-    .action(function(type, args) {
-      
-    })
-
-  program
     .command('create [type]')
-    .description('')
+    .description('Create a new App directory')
     .action(function(type, args) {
-      console.log('create something')
+      console.log('Creating a new App')
 
       const sourceDir = path.join(__dirname, '..', 'prototype', 'site', 'app')
       const destDir = path.join(process.cwd(), 'app')

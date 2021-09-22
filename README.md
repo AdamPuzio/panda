@@ -33,6 +33,19 @@ You can run Panda configuration-free, but when you're ready to start configuring
 
 When running `npx panda run`, you have a number of options that you can use to configure your app:
 
+##### Environmental Variables
+
+`LOG_LEVEL` (default: info)
+
+The log level to use (error/warn/info/verbose/debug/silly)
+
+Examples:
+```bash
+LOG_LEVEL=debug npx panda run
+```
+
+##### Parameters
+
 `--services [services]` (default: *)
 
 This provides the list of services to start in this node, separated by commas
@@ -61,10 +74,6 @@ Set the directory to scan for Packages
 
 Set the directory to scan for local files
 
-`--loglevel [level]` (default: `debug`)
-
-The log level to use (error/warn/info/verbose/debug/silly)
-
 #### Config Files
 
 As mentioned above, you can bake your own configuration file into your project. By default, it looks for `panda.config.js`, but by setting the `--config` option, you can point it to whatever file you want. 
@@ -92,6 +101,16 @@ If you are creating your own application and want to use Panda's functionality w
 const panda = require('panda')
 ```
 
+## CLI
+
+The Panda CLI is used to create and run your apps using `npx`. 
+
+`npx panda help`
+
+`npx panda run`
+
+`npx panda create`
+
 ## Development
 
 ### Services
@@ -113,6 +132,26 @@ app
 
 Routes within `/app/routes/index.js` will automatically be prefixed with `/`, so they'll be available at the top level. Any routes created within `/app/routes/foo/index.js` or `/app/routes/foo/bar.js` will be prefixed with `/foo/`. The filenames `index` and `bar` have no bearing on routes.
 
+Example:
+
+```js
+const Panda = require('panda')
+const app = Panda.App.router()
+
+app.get('/', async (ctx, next) => {
+  ctx.body = 'home'
+})
+
+app.get('/foo', async (ctx, next) => {
+  // render an EJS template with a layout
+  await ctx.render('/pages/test', {
+    layout: 'layouts/default'
+  })
+})
+
+module.exports = app
+```
+
 ### Views
 
 By default, Panda using ExtJS as its templating engine. You can begin adding .html template files into the `/app/views` directory and then calling them either from routes or other views.
@@ -123,7 +162,7 @@ Within `/app/public` you can serve any static content you'd like. Just drop a fi
 
 ### Packages
 
-### Panda Development
+## Panda Development
 
 When working on the core Panda library (not an application that uses Panda), install Panda in a local directory:
 

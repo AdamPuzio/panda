@@ -44,27 +44,8 @@ class PackageManager {
    */
   async scanPandaServiceDir () {
     logger.debug('PackageManager.scanPandaServiceDir()')
-    let svcList = this.Services
     let svcDir = path.join(Config.PANDA_PATH, 'base', 'services')
-    logger.debug(`Scanning directory for Services: ${svcDir}`)
-    let files = Glob.sync(path.join(svcDir, '/**/*.service.js'))
-    
-    files.forEach(function (val) {
-      logger.debug(`  Loading Service at ${val}`)
-      let svc
-      svc = require(val)
-      let svcName = svc.name
-      let svcVersion = svc.version || 1
-      if(!svcList[svcName]) svcList[svcName] = {
-        _default_: svcVersion,
-        _files_: []
-      }
-      svcList[svcName][svcVersion] = {
-        filename: val,
-        //info: svc
-      }
-      svcList[svcName]._files_.push(val)
-    })
+    return this.scanServiceDir(svcDir)
   }
 
   /**
@@ -102,7 +83,7 @@ class PackageManager {
   async scanPackageDir (dir) {
     logger.debug('PackageManager.scanPackageDir()')
     let pkgDir = path.join(Config.APP_PATH, dir)
-    logger.debug('PKGDIR: ' + pkgDir)
+    logger.debug(`Scanning Package directory: ${pkgDir}`)
     let files = Glob.sync(path.join(dir, '/**/*/' + this.options.manifestFilename))
     logger.debug(files)
     return true

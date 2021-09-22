@@ -62,12 +62,6 @@ module.exports = {
   async created() {
     const app = this.app = new Koa()
     let broker = app.broker = this.broker
-    //let localApp = Panda.App.app('web')
-
-    //console.log('localApp')
-    //console.log(localApp)
-    /*let accounts = Panda.Config.cfg
-    console.log(accounts)*/
 
     app.use(cors())
     app.use(bodyParser())
@@ -128,56 +122,6 @@ module.exports = {
       await next()
     })
 
-
-    /*
-    await Panda.App.setStaticRoutes()
-    
-    //ctx.state.user
-    
-    app.use(async(ctx, next) => {
-      await next()
-      if(ctx.status === 404) {
-        console.log('RENDER 404 HERE')
-      }
-      console.log('STATUS: ' + ctx.status)
-      //console.log(ctx.pandaReq)
-    })
-    
-    app.use(async(ctx, next) => {
-      try {
-        await next()
-        const status = ctx.status || 404
-        if (status === 404) {
-          ctx.throw(404)
-        }
-      } catch (err) {
-        ctx.status = err.status || 500
-        if (ctx.status === 404) {
-          //Your 404.jade
-          //await ctx.render('404')
-          ctx.body = '404'
-        } else {
-          //other_error jade
-          //await ctx.render('other_error')
-          console.log(err)
-          ctx.body = 'Error ' + ctx.status
-        }
-      }
-    })
-    
-    app.use(Panda.App.request)
-    app.use(Panda.App.middleware)
-    
-    app.use(async(ctx, next) => {
-      await ctx.render('go')
-      next()
-    })
-    
-    app.on('error', err => {
-      console.log('ERROR 1')
-      console.log(err)
-      //log.error('server error', err)
-    })*/
   },
   
   started() {
