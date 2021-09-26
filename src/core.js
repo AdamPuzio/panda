@@ -37,12 +37,13 @@ class Core {
    * 
    * @param {String} svcs - List of services to run in the broker
    */
-  async runBroker (svcs) {
+  async runBroker (svcs, opts={}) {
     logger.debug(`Core.runBroker()`)
     let svcList = await PackageManager.parseServiceList(svcs)
     
     // Create a ServiceBroker
     const broker = new ServiceBroker({
+      logLevel: process.env.LOG_LEVEL || "debug",
       errorHandler(err, info) {
         logger.error(`BROKER ERROR HANDLER`)
         logger.error(err)
@@ -54,6 +55,8 @@ class Core {
     })
 
     broker.start()
+    if(opts.repl && opts.repl === true) broker.repl()
+    return broker
   }
   
 }

@@ -43,6 +43,7 @@
     "koa-session": "^6.2.0",
     "koa-static": "^5.0.0",
     "moleculer": "^0.14.12",
+    "moleculer-repl": "^0.6.6",
     "moleculer-web": "^0.9.1",
     "ncp": "^2.0.0",
     "winston": "^3.3.3"

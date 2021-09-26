@@ -19,9 +19,10 @@ program
   .option('-l, --loglevel [level]', 'Specify a log level to use', 'debug')
   .action(async function(type, args) {
     // load config file
-    await Panda.Config.load(args.config, {
-      REPL: args.repl
-    })
+    let opts = {
+      repl: args.repl
+    }
+    await Panda.Config.load(args.config, opts)
 
     // scan the service directory
     await Panda.PackageManager.scanPandaServiceDir()
@@ -33,7 +34,7 @@ program
     await Panda.App.scanAppDir(args.appdir)
 
     // run the services
-    await Panda.Core.runBroker(args.services)
+    await Panda.Core.runBroker(args.services, opts)
   })
 
   program
