@@ -160,6 +160,44 @@ By default, Panda using ExtJS as its templating engine. You can begin adding .ht
 
 Within `/app/public` you can serve any static content you'd like. Just drop a file into that directory and it'll immediately be available at the relative path. 
 
+### Services
+
+Example Service:
+
+```js
+const Panda = require('panda')
+const { PandaError, PandaClientError, PageNotFoundError, ValidationError, UnauthorizedError, ForbiddenError } = require('panda').Errors
+
+module.exports = {
+  name: 'sample',
+
+  mixins: [],
+
+  settings: {},
+
+  actions: {
+
+    basic: {
+      params: {
+        value: { type: 'string', optional: true }
+      },
+      async handler (ctx) {
+        const params = ctx.params
+        const val = params.value
+
+        return {
+          value: val
+        }
+      }
+    }
+  },
+
+  methods: {
+
+  }
+}
+```
+
 ### Packages
 
 ## Panda Development
@@ -185,3 +223,8 @@ Next, update your app's `package.json` file to reflect that it should use the lo
 ```
 
 Finally, run `npm install` to install all Panda dependencies and ensure that it's referencing the local copy. Now, all changes made to the code in `lib/panda` will be reflected immediately. 
+
+
+## License
+
+Panda is available under the [MIT license](https://tldrlegal.com/license/mit-license).

@@ -4,7 +4,6 @@
 
 const program = require('commander')
 const Panda = require('../')
-const fs = require('fs')
 const path = require('path')
 const ncp = require('ncp').ncp
 
@@ -17,9 +16,9 @@ program
   .option('-p, --pkgdir [dir]', 'Specify a directory to load packages from', 'node_modules')
   .option('-a, --appdir [dir]', 'Specify a local app directory to load', 'app')
   .option('-l, --loglevel [level]', 'Specify a log level to use', 'debug')
-  .action(async function(type, args) {
+  .action(async function (type, args) {
     // load config file
-    let opts = {
+    const opts = {
       repl: args.repl
     }
     await Panda.Config.load(args.config, opts)
@@ -37,23 +36,23 @@ program
     await Panda.Core.runBroker(args.services, opts)
   })
 
-  program
-    .command('create [type]')
-    .description('Create a new App directory')
-    .action(function(type, args) {
-      console.log('Creating a new App')
+program
+  .command('create [type]')
+  .description('Create a new App directory')
+  .action(function (type, args) {
+    console.log('Creating a new App')
 
-      const sourceDir = path.join(__dirname, '..', 'prototype', 'site', 'app')
-      const destDir = path.join(process.cwd(), 'app')
+    const sourceDir = path.join(__dirname, '..', 'prototype', 'site', 'app')
+    const destDir = path.join(process.cwd(), 'app')
 
-      console.log('Copying app directory structure...')
-      console.log('    dest: ' + destDir)
+    console.log('Copying app directory structure...')
+    console.log('    dest: ' + destDir)
 
-      ncp(sourceDir, destDir, function (err) {
+    ncp(sourceDir, destDir, function (err) {
       if (err) return console.error(err)
-        
-      console.log('done!')
-      })
-    })
 
-  program.parse(process.argv)
+      console.log('done!')
+    })
+  })
+
+program.parse(process.argv)

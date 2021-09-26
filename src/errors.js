@@ -19,7 +19,7 @@ class PandaError extends ExtendableError {
    *
    * @memberof PandaError
    */
-  constructor(message, code, type, data) {
+  constructor (message, code, type, data) {
     super(message)
     this.code = code || 500
     this.type = type
@@ -45,7 +45,7 @@ class PandaClientError extends PandaError {
    *
    * @memberof PandaClientError
    */
-  constructor(message, code, type, data) {
+  constructor (message, code, type, data) {
     super(message, code || 400, type, data)
   }
 }
@@ -64,8 +64,8 @@ class PageNotFoundError extends PandaError {
    *
    * @memberof PageNotFoundError
    */
-  constructor(data = {}) {
-    let msg = 'Page not found'
+  constructor (data = {}) {
+    const msg = 'Page not found'
 
     super(msg, 404, 'PAGE_NOT_FOUND', data)
   }
@@ -87,7 +87,7 @@ class ValidationError extends PandaClientError {
    *
    * @memberof ValidationError
    */
-  constructor(message, type, data) {
+  constructor (message, type, data) {
     super(message, 422, type || 'VALIDATION_ERROR', data)
   }
 }
@@ -108,7 +108,7 @@ class UnauthorizedError extends PandaClientError {
    *
    * @memberof UnauthorizedError
    */
-  constructor(message, type, data) {
+  constructor (message, type, data) {
     super(message || 'Unauthorized', 401, type || 'UNAUTHORIZED_ERROR', data)
   }
 }
@@ -129,7 +129,7 @@ class ForbiddenError extends PandaClientError {
    *
    * @memberof ForbiddenError
    */
-  constructor(message, type, data) {
+  constructor (message, type, data) {
     super(message, 403, type || 'FORBIDDEN_ERROR', data)
   }
 }
@@ -140,16 +140,16 @@ class ForbiddenError extends PandaClientError {
  * @param {Error} err
  * @returns {PandaError}
  */
-function recreateError(err) {
-  const Class = module.exports[err.name];
+function recreateError (err) {
+  const Class = module.exports[err.name]
   if (Class) {
-    switch(err.name) {
-      case "PandaError": return new Class(err.message, err.code, err.type, err.data);
-      case "PandaClientError": return new Class(err.message, err.code, err.type, err.data);
-      case "PageNotFoundError": return new Class(err.message, err.code, err.type, err.data);
-      case "ValidationError": return new Class(err.message, err.type, err.data);
-      case "UnauthorizedError": return new Class(err.message, err.type, err.data);
-      case "ForbiddenError": return new Class(err.message, err.type, err.data);
+    switch (err.name) {
+      case 'PandaError': return new Class(err.message, err.code, err.type, err.data)
+      case 'PandaClientError': return new Class(err.message, err.code, err.type, err.data)
+      case 'PageNotFoundError': return new Class(err.message, err.code, err.type, err.data)
+      case 'ValidationError': return new Class(err.message, err.type, err.data)
+      case 'UnauthorizedError': return new Class(err.message, err.type, err.data)
+      case 'ForbiddenError': return new Class(err.message, err.type, err.data)
     }
   }
 }

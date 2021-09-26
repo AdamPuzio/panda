@@ -8,27 +8,26 @@ const Koa = require('koa')
 const bodyParser = require('koa-bodyparser')
 const servePublic = require('koa-static')
 const cors = require('@koa/cors')
-const Router = require('@koa/router')
 const session = require('koa-session')
 const render = require('koa-ejs')
 
-let localApp = Panda.App.app('web')
+const localApp = Panda.App.app('web')
 
 module.exports = {
   name: 'web',
   mixins: [ApiGateway],
-  
+
   settings: {
     port: process.env.PORT || localApp.port || 5000,
     tenancyMode: 'single'
   },
-  
+
   dependencies: [
-    //'package'
+    // 'package'
   ],
-  
+
   methods: {
-    handleErr: function(err, req, res, next) {
+    handleErr: function (err, req, res, next) {
       switch (true) {
         case err instanceof PageNotFoundError:
         case err instanceof ValidationError:
@@ -45,35 +44,35 @@ module.exports = {
       }
       logger.error('UNKNOWN ERROR [' + typeof err + ']')
       logger.error(err)
-      let code = err.code || 500
-      let message = err.message || 'ERROR'
+      const code = err.code || 500
+      const message = err.message || 'ERROR'
       res.status(code).send(message)
     },
 
-    establishSession: function(app) {
+    establishSession: function (app) {
       app.keys = ['panda-key']
-      let sessionCfg = {
+      const sessionCfg = {
         key: 'panda.session'
       }
       return session(sessionCfg, app)
     }
   },
-  
-  async created() {
+
+  async created () {
     const app = this.app = new Koa()
-    let broker = app.broker = this.broker
+    const broker = app.broker = this.broker
 
     app.use(cors())
     app.use(bodyParser())
 
-    /*app.on('error', err => {
+    /* app.on('error', err => {
       logger.error('server error', err)
-    })*/
+    }) */
 
-    if(localApp.viewsDir) {
+    if (localApp.viewsDir) {
       render(app, {
         root: localApp.viewsDir,
-        //layout: 'template',
+        // layout: 'template',
         layout: false,
         viewExt: 'html',
         cache: false,
@@ -91,11 +90,11 @@ module.exports = {
       ctx.set('X-Response-Time', `${ms}ms`)
       logger.verbose(`${ctx.method} ${ctx.url} (${ctx.status}) - ${ms}ms`)
     })
-    
+
     // render generic 404 if nothing found
-    app.use(async(ctx, next) => {
+    app.use(async (ctx, next) => {
       await next()
-      if(ctx.status === 404) {
+      if (ctx.status === 404) {
         ctx.status = 404
         ctx.body = '404 Page Not Found'
       }
@@ -104,13 +103,13 @@ module.exports = {
     // todo: maintenance mode
 
     // static directories
-    let staticDir = Panda.App.app('web').publicDir
+    const staticDir = Panda.App.app('web').publicDir
     app.use(servePublic(staticDir))
 
     // local routes
-    let localRoutes = Panda.App.app('web').routes
+    const localRoutes = Panda.App.app('web').routes
     localRoutes.forEach(function (item, index) {
-      let r = require(item.file)
+      const r = require(item.file)
       r.prefix(item.route)
       app.use(r.routes())
     })
@@ -118,28 +117,25 @@ module.exports = {
     // plugins
 
     app.use(async (ctx, next) => {
-      //ctx.body = 'Hello World';
+      // ctx.body = 'Hello World';
       await next()
     })
-
   },
-  
-  started() {
+
+  started () {
     this.app.listen(Number(this.settings.port), err => {
-      if (err)
-        return this.broker.fatal(err)
+      if (err) { return this.broker.fatal(err) }
 
       this.logger.info(`web server started on port ${this.settings.port}`)
     })
   },
 
-  stopped() {
+  stopped () {
     if (this.app.listening) {
       this.app.close(err => {
-        if (err)
-          return this.logger.error("web server close error!", err)
+        if (err) { return this.logger.error('web server close error!', err) }
 
-        this.logger.info("web server stopped!")
+        this.logger.info('web server stopped!')
       })
     }
   }

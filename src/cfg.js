@@ -1,6 +1,6 @@
 'use strict'
 
-//const logger = require('./log').getLogger('CONFIG')
+// const logger = require('./log').getLogger('CONFIG')
 const Logger = require('./log')
 const Utility = require('./util')
 const path = require('path')
@@ -16,16 +16,16 @@ const defaultCfg = {
 let instance = null
 
 // getter/setter handler so no exception is ever thrown
-var handler = {
-  get: function(target, name){
-    if(typeof name === 'symbol')
-      return null
-    if(!(name in target))
+const handler = {
+  get: function (target, name) {
+    if (typeof name === 'symbol') { return null }
+    if (!(name in target)) {
       target[name] = new Proxy({}, {
-        get: function(target, name) {
+        get: function (target, name) {
           return undefined
         }
       })
+    }
     return target[name]
   },
   set (target, key, value) {
@@ -50,23 +50,21 @@ class Config {
       this.options = Object.assign({}, defaultOptions, options)
       this.cfgObj = Object.assign({}, defaultCfg)
       this.cfg = new Proxy(this.cfgObj, handler)
-      
-      if(!instance) instance = this
+
+      if (!instance) instance = this
       return instance
     } catch (err) {
       console.log('Unable to create Config', err)
     }
   }
 
-  async load (cfgFile, cfg={}) {
+  async load (cfgFile, cfg = {}) {
     try {
       this.logger.info('Loading Configuration')
-      let cfgAbsFile = path.join(this.cfgObj.APP_PATH, cfgFile)
+      const cfgAbsFile = path.join(this.cfgObj.APP_PATH, cfgFile)
       if (fs.existsSync(cfgAbsFile)) {
         this.logger.info(`Loading config file at ${cfgFile}`)
         this.cfgObj = Utility.loadJsonFile(cfgAbsFile)
-
-        this.cfgObj = Object.assign(this.cfgObj, cfgObj)
       } else {
         this.logger.debug(`No config file exists at ${cfgAbsFile}`)
       }
@@ -82,7 +80,6 @@ class Config {
   async readCfg (cfgfile) {
 
   }
-  
 }
 
 const PandaConfig = new Config()

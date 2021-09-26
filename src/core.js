@@ -7,7 +7,7 @@ const logger = require('./log').getLogger('CORE')
 const defaultOptions = {}
 
 let instance = null
-let pandaVersion = require('../package.json').version
+const pandaVersion = require('../package.json').version
 
 /**
  * Core class
@@ -24,8 +24,8 @@ class Core {
     try {
       logger.info(`Panda v${pandaVersion} is starting...`)
       this.options = Object.assign({}, defaultOptions, options)
-      
-      if(!instance) instance = this
+
+      if (!instance) instance = this
       return instance
     } catch (err) {
       console.log('Unable to create Core', err)
@@ -34,31 +34,30 @@ class Core {
 
   /**
    * Run a service broker
-   * 
+   *
    * @param {String} svcs - List of services to run in the broker
    */
-  async runBroker (svcs, opts={}) {
-    logger.debug(`Core.runBroker()`)
-    let svcList = await PackageManager.parseServiceList(svcs)
-    
+  async runBroker (svcs, opts = {}) {
+    logger.debug('Core.runBroker()')
+    const svcList = await PackageManager.parseServiceList(svcs)
+
     // Create a ServiceBroker
     const broker = new ServiceBroker({
-      logLevel: process.env.LOG_LEVEL || "debug",
-      errorHandler(err, info) {
-        logger.error(`BROKER ERROR HANDLER`)
+      logLevel: process.env.LOG_LEVEL || 'debug',
+      errorHandler (err, info) {
+        logger.error('BROKER ERROR HANDLER')
         logger.error(err)
       }
     })
 
-    svcList.forEach(function(svcFile) {
+    svcList.forEach(function (svcFile) {
       broker.loadService(svcFile)
     })
 
     broker.start()
-    if(opts.repl && opts.repl === true) broker.repl()
+    if (opts.repl && opts.repl === true) broker.repl()
     return broker
   }
-  
 }
 
 Core.VERSION = pandaVersion

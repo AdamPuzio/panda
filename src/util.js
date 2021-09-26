@@ -11,13 +11,13 @@ const Utility = {
   fileExists: async function (file) {
     return fs.existsSync(file)
   },
-  
+
   relFileExists: async function (file) {
     return await Utility.fileExists(path.resolve(process.cwd(), file))
   },
-  
+
   loadJsonFile: async function (filePath) {
-    let content = JSON.parse(fs.readFileSync(filePath, 'utf8'))
+    const content = JSON.parse(fs.readFileSync(filePath, 'utf8'))
     return content
   }
 }
