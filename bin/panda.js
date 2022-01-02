@@ -17,6 +17,8 @@ program
   .option('-a, --appdir [dir]', 'Specify a local app directory to load', 'app')
   .option('-l, --loglevel [level]', 'Specify a log level to use', 'debug')
   .action(async function (type, args) {
+    const baseDir = path.join(process.cwd())
+
     // load config file
     const opts = {
       repl: args.repl
@@ -30,7 +32,7 @@ program
     await Panda.PackageManager.scanPackageDir(args.pkgdir)
 
     // scan the application directory (appdir)
-    await Panda.App.scanAppDir(args.appdir)
+    await Panda.App.scanAppDir(path.join(baseDir, 'app'))
 
     // run the services
     await Panda.Core.runBroker(args.services, opts)

@@ -76,10 +76,8 @@ class PandaApp {
    *
    * @param {*} dir
    */
-  async scanAppDir (dir) {
-    logger.debug('App.scanAppDir()')
-    const appDir = path.join(Config.APP_PATH, dir)
-    logger.debug(`Scanning App directory: ${appDir}`)
+  async scanAppDir (dir, appId='web') {
+    logger.debug(`App.scanAppDir(${dir}, ${appId})`)
 
     const pathList = {
       public: {
@@ -96,34 +94,34 @@ class PandaApp {
       }
     }
     for (const [key, value] of Object.entries(pathList)) {
-      const localPath = path.join(appDir, key)
-      logger.debug(`Scanning ${key} directory: ${localPath}`)
+      const localPath = path.join(dir, key)
+      logger.debug(`  Scanning ${key} directory: ${localPath}`)
       const dirExists = Utility.dirExists(localPath)
       if (dirExists) {
-        logger.silly('  Directory does exist')
+        logger.silly('    Directory does exist')
         if (value.fn && typeof value.fn === 'function') {
           // function exists as a function, call it
-          await value.fn.call(this, 'web', localPath)
+          await value.fn.call(this, appId, localPath)
         } else if (value.fn) {
           // function exists as a reference... add this later
         }
       } else {
-        logger.silly('  Directory doesn\'t exist')
+        logger.silly('    Directory doesn\'t exist')
       }
     }
     return true
   }
 
   async setPublicDir (appId, dir) {
-    logger.debug('App.setPublicDir()')
+    logger.debug(`    App.setPublicDir(${appId}, ${dir})`)
     const publicDir = path.join(dir)
-    logger.debug(`Registering App public directory (${publicDir})`)
     this.app(appId).publicDir = publicDir
 
     return true
   }
 
   async parseRoutesDir (appId, dir) {
+    logger.debug(`    App.parseRoutesDir(${appId}, ${dir})`)
     const files = await glob(path.join(dir, '/**/*.js'))
     const $this = this
     files.forEach(async function (file) {
@@ -136,6 +134,7 @@ class PandaApp {
   }
 
   async registerRoute (appId, route, file) {
+    logger.debug(`      App.registerRoute(${appId}, ${route}, ${file})`)
     this.app(appId).routes.push({
       route: route,
       file: file
@@ -143,11 +142,13 @@ class PandaApp {
   }
 
   async parseServicesDir (appId, dir) {
+    logger.debug(`    App.parseServicesDir(${appId}, ${dir})`)
     await PackageManager.scanServiceDir(dir)
     return true
   }
 
   async parseViewsDir (appId, dir) {
+    logger.debug(`    App.parseViewsDir(${appId}, ${dir})`)
     this.app(appId).viewsDir = dir
     return true
   }

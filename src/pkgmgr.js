@@ -42,7 +42,7 @@ class PackageManager {
    * Scan the Panda services directory for all Services
    */
   async scanPandaServiceDir () {
-    logger.debug('PackageManager.scanPandaServiceDir()')
+    logger.debug(`PackageManager.scanPandaServiceDir()`)
     const svcDir = path.join(Config.PANDA_PATH, 'base', 'services')
     return this.scanServiceDir(svcDir)
   }
@@ -51,9 +51,8 @@ class PackageManager {
    * Scan a directory for Services
    */
   async scanServiceDir (svcDir) {
-    logger.debug('PackageManager.scanServiceDir()')
+    logger.debug(`PackageManager.scanServiceDir(${svcDir})`)
     const svcList = this.Services
-    logger.debug(`Scanning directory for Services: ${svcDir}`)
     const files = Glob.sync(path.join(svcDir, '/**/*.service.js'))
 
     files.forEach(function (val) {
@@ -81,9 +80,8 @@ class PackageManager {
    * @param {*} dir
    */
   async scanPackageDir (dir) {
-    logger.debug('PackageManager.scanPackageDir()')
+    logger.debug(`PackageManager.scanPackageDir(${dir})`)
     const pkgDir = path.join(Config.APP_PATH, dir)
-    logger.debug(`Scanning Package directory: ${pkgDir}`)
     const files = Glob.sync(path.join(dir, '/**/*/' + this.options.manifestFilename))
     logger.debug(files)
     return true
@@ -95,7 +93,8 @@ class PackageManager {
    * @param {*} svcs
    */
   async parseServiceList (svcs) {
-    logger.debug('PackageManager.parseServiceList()')
+    logger.debug(`PackageManager.parseServiceList()`)
+    logger.silly(svcs)
     let svcList = []
 
     // check if a string list needs to be split

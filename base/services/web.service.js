@@ -60,7 +60,7 @@ module.exports = {
 
   async created () {
     const app = this.app = new Koa()
-    const broker = app.broker = this.broker
+    const broker = app.broker = app.context.broker = this.broker
 
     app.use(cors())
     app.use(bodyParser())

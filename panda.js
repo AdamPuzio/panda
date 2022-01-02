@@ -18,6 +18,7 @@ module.exports = {
   // convenience functions & variables
   cfg: require('./src/cfg').cfg,
   getLogger: require('./src/log').getLogger,
+  router: require('./src/app').router,
 
   VERSION: require('./src/core').VERSION
 }

@@ -113,10 +113,6 @@ The Panda CLI is used to create and run your apps using `npx`.
 
 ## Development
 
-### Services
-
-Panda uses Moleculer as its service broker. Any services created in the `/app/services` directory with the name `{service}.service.js` will be registered into the system.
-
 ### Routes
 
 Panda uses Koa for routing. When creating routes in `/app/routes`, routing prefixes are assigned based on directory structure. Filenames within the directories don't matter. For example, with the following directory structure:
@@ -139,6 +135,7 @@ const Panda = require('panda')
 const app = Panda.App.router()
 
 app.get('/', async (ctx, next) => {
+  // output a string
   ctx.body = 'home'
 })
 
@@ -149,18 +146,26 @@ app.get('/foo', async (ctx, next) => {
   })
 })
 
+app.get('/svc-action-test', async (ctx, next) => {
+  // render a string from a service call
+  let output = await ctx.broker.call('testsvc.action', { var: 'value' })
+  ctx.body = output
+})
+
 module.exports = app
 ```
 
 ### Views
 
-By default, Panda using ExtJS as its templating engine. You can begin adding .html template files into the `/app/views` directory and then calling them either from routes or other views.
+By default, Panda uses ExtJS as its templating engine. You can begin adding .html template files into the `/app/views` directory and then calling them either from routes or other views.
 
 ### Public Directory
 
 Within `/app/public` you can serve any static content you'd like. Just drop a file into that directory and it'll immediately be available at the relative path. 
 
 ### Services
+
+Panda uses Moleculer as its service broker. Any services created in the `/app/services` directory with the name `{service}.service.js` will be registered into the system.
 
 Example Service:
 
@@ -200,7 +205,34 @@ module.exports = {
 
 ### Packages
 
+Packages are loaded by default as NPM modules via `npm install {package}`. 
+
 ## Panda Development
+
+### How It Works
+
+Panda is written to allow you to customize _how_ it gets run. By default (when running `npx panda run`), it does the following:
+
+```js
+// load config file
+await Panda.Config.load(config, opts)
+
+// scan the service directory
+await Panda.PackageManager.scanPandaServiceDir()
+
+// scan the package directory (pkgdir)
+await Panda.PackageManager.scanPackageDir(pkgdir)
+
+// scan the application directory (appdir)
+await Panda.App.scanAppDir(path.join(baseDir, 'app'))
+
+// run the services
+await Panda.Core.runBroker(services, opts)
+```
+
+As you can see, this is a very modular approach that can be written into your own script or bin file. 
+
+### Local Setup
 
 When working on the core Panda library (not an application that uses Panda), install Panda in a local directory:
 
