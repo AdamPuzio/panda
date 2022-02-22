@@ -111,6 +111,8 @@ The Panda CLI is used to create and run your apps using `npx`.
 
 `npx panda create`
 
+`npx panda create-service [svc]`
+
 ## Development
 
 ### Routes
@@ -158,6 +160,44 @@ module.exports = app
 ### Views
 
 By default, Panda uses ExtJS as its templating engine. You can begin adding .html template files into the `/app/views` directory and then calling them either from routes or other views.
+
+Using our earlier example:
+
+```js
+const Panda = require('panda')
+const app = Panda.router()
+
+app.get('/', async (ctx, next) => {
+  // render an EJS template with a layout
+  await ctx.render('/pages/home', {
+    layout: 'layouts/default'
+  })
+})
+
+module.exports = app
+```
+
+Now you build a layout file in `app/views/layouts/default.html`:
+
+```html
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>My Page Title</title>
+  </head>
+  <body>
+
+    <%- body %>
+
+  </body>
+</html>
+```
+
+And then build your page file in `app/views/pages/home.html`
 
 ### Public Directory
 

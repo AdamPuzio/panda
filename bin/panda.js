@@ -39,9 +39,9 @@ program
   })
 
 program
-  .command('create [type]')
+  .command('create app')
   .description('Create a new App directory')
-  .action(function (type, args) {
+  .action(function (args) {
     console.log('Creating a new App')
 
     const sourceDir = path.join(__dirname, '..', 'prototype', 'site', 'app')
@@ -56,5 +56,31 @@ program
       console.log('done!')
     })
   })
+
+  program
+    .command('create-service [svc]')
+    .description('Create a new Service')
+    .action(async function (svc, args) {
+      console.log('Creating a new Service')
+      if(!svc) throw new Error(`Can't create a Service without a name`)
+  
+      const sourceFile = path.join(__dirname, '..', 'prototype', 'templates', 'service.js')
+      const destFile = path.join(process.cwd(), 'app', 'services', svc + '.service.js')
+  
+      console.log('Creating Service...')
+      console.log('    dest: ' + destFile)
+
+      let sourceFileExists = await Panda.Utility.fileExists(sourceFile)
+      if(!sourceFileExists) throw new Error(`Source file (${sourceFile}) does not exist`)
+      let sourceFileContent = await Panda.Utility.getFile(sourceFile)
+  
+      let content = await Panda.Utility.template(sourceFileContent, {
+        svc: svc
+      })
+      let rs = await Panda.Utility.setFile(destFile, content)
+      if(rs === false) throw new Error(`Failed to write to file ${destFile}`)
+
+      console.log('success!')
+    })
 
 program.parse(process.argv)
