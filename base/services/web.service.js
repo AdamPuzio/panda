@@ -120,11 +120,6 @@ module.exports = {
       // ctx.body = 'Hello World';
       await next()
     })
-
-    app.use(async ctx => {
-      let params = { req: ctx }
-      let request = await broker.call('request.parse', params).catch(this.logger.error)
-    })
   },
 
   started () {
