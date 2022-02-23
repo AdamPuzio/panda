@@ -84,6 +84,9 @@ module.exports = {
 
     // simply for processing response time
     app.use(async (ctx, next) => {
+      ctx.state = ctx.state || {}
+      ctx.state._url = ctx.originalUrl
+      ctx.state._env = ctx.app.env
       const start = Date.now()
       await next()
       const ms = Date.now() - start
