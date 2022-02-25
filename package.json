@@ -1,6 +1,6 @@
 {
   "name": "panda",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Panda rapid application framework",
   "main": "./panda",
   "scripts": {
@@ -29,25 +29,25 @@
     "node": ">= 10.x.x"
   },
   "devDependencies": {
-    "mocha": "^6.0.2",
-    "standard": "^16.0.3"
+    "mocha": "^9.2.1",
+    "standard": "^16.0.4"
   },
   "dependencies": {
     "@koa/cors": "^3.1.0",
     "@koa/router": "^10.1.1",
     "bson-objectid": "^2.0.2",
-    "commander": "^7.1.0",
-    "glob": "^7.1.6",
-    "koa": "^2.13.1",
+    "commander": "^9.0.0",
+    "glob": "^7.2.0",
+    "koa": "^2.13.4",
     "koa-bodyparser": "^4.3.0",
     "koa-ejs": "^4.3.0",
     "koa-session": "^6.2.0",
     "koa-static": "^5.0.0",
-    "moleculer": "^0.14.12",
-    "moleculer-repl": "^0.6.6",
-    "moleculer-web": "^0.9.1",
+    "moleculer": "^0.14.19",
+    "moleculer-repl": "^0.7.0",
+    "moleculer-web": "^0.10.4",
     "moment": "^2.29.1",
     "ncp": "^2.0.0",
-    "winston": "^3.3.3"
+    "winston": "^3.6.0"
   }
 }
