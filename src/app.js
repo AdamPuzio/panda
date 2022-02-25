@@ -76,7 +76,7 @@ class PandaApp {
    *
    * @param {*} dir
    */
-  async scanAppDir (dir, appId='web') {
+  async scanAppDir (dir, appId = 'web') {
     logger.debug(`App.scanAppDir(${dir}, ${appId})`)
 
     const pathList = {

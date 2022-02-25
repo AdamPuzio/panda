@@ -33,16 +33,16 @@ module.exports = {
   },
 
   methods: {
-    async render (view, data={}, opts={}) {
-      let viewsDir = localApp.viewsDir
-      let relPath = path.dirname(path.join(viewsDir, view))
-      let viewsPaths = [viewsDir]
-      if(relPath !== viewsDir) viewsPaths.push(relPath)
-      if(opts.layout) {
-        let layoutDir = path.dirname(path.join(viewsDir, opts.layout))
-        if(layoutDir !== viewsDir) viewsPaths.push(layoutDir)
+    async render (view, data = {}, opts = {}) {
+      const viewsDir = localApp.viewsDir
+      const relPath = path.dirname(path.join(viewsDir, view))
+      const viewsPaths = [viewsDir]
+      if (relPath !== viewsDir) viewsPaths.push(relPath)
+      if (opts.layout) {
+        const layoutDir = path.dirname(path.join(viewsDir, opts.layout))
+        if (layoutDir !== viewsDir) viewsPaths.push(layoutDir)
       }
-      let options = Object.assign({}, {
+      const options = Object.assign({}, {
         root: viewsDir,
         views: viewsPaths,
         layout: false,
@@ -50,12 +50,12 @@ module.exports = {
         cache: false,
         debug: false
       }, opts)
-      let str = await this.getView(view)
+      const str = await this.getView(view)
       let output = ''
       try {
         output = ejs.render(str, options)
-        if(options.layout) {
-          let layout = await this.getView(options.layout)
+        if (options.layout) {
+          const layout = await this.getView(options.layout)
           output = ejs.render(layout, { body: output }, options)
         }
       } catch (e) {
@@ -66,9 +66,9 @@ module.exports = {
       return output
     },
 
-    async getView(view, encoding = 'utf-8') {
-      let viewFile = path.join(localApp.viewsDir, view + '.html')
-      let fileStr = await fs.readFile(viewFile, { encoding })
+    async getView (view, encoding = 'utf-8') {
+      const viewFile = path.join(localApp.viewsDir, view + '.html')
+      const fileStr = await fs.readFile(viewFile, { encoding })
       return fileStr
     }
   }

@@ -19,12 +19,12 @@ const Utility = {
     return await Utility.fileExists(path.resolve(process.cwd(), file))
   },
 
-  getFile: async function (filePath, type='utf8') {
+  getFile: async function (filePath, type = 'utf8') {
     const content = fs.readFileSync(filePath, 'utf8')
     return content
   },
 
-  setFile: async function (filePath, content, opts={}) {
+  setFile: async function (filePath, content, opts = {}) {
     opts = Object.assign({}, opts)
     try {
       const saveContent = fs.writeFileSync(filePath, content, opts)

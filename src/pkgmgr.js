@@ -42,7 +42,7 @@ class PackageManager {
    * Scan the Panda services directory for all Services
    */
   async scanPandaServiceDir () {
-    logger.debug(`PackageManager.scanPandaServiceDir()`)
+    logger.debug('PackageManager.scanPandaServiceDir()')
     const svcDir = path.join(Config.PANDA_PATH, 'base', 'services')
     return this.scanServiceDir(svcDir)
   }
@@ -93,7 +93,7 @@ class PackageManager {
    * @param {*} svcs
    */
   async parseServiceList (svcs) {
-    logger.debug(`PackageManager.parseServiceList()`)
+    logger.debug('PackageManager.parseServiceList()')
     logger.silly(svcs)
     let svcList = []
 
