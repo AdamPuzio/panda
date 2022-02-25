@@ -19,7 +19,7 @@ Setting up Panda is easy:
 ```bash
 npm init -y
 npm install --save panda
-npx panda create app
+npx panda create-app
 npx panda run
 ```
 
@@ -109,7 +109,7 @@ The Panda CLI is used to create and run your apps using `npx`.
 
 `npx panda run`
 
-`npx panda create`
+`npx panda create-app`
 
 `npx panda create-service [svc]`
 

@@ -39,7 +39,7 @@ program
   })
 
 program
-  .command('create app')
+  .command('create-app')
   .description('Create a new App directory')
   .action(function (args) {
     console.log('Creating a new App')
@@ -51,36 +51,50 @@ program
     console.log('    dest: ' + destDir)
 
     ncp(sourceDir, destDir, function (err) {
-      if (err) return console.error(err)
+      if (err) return errorMsg(err)
 
-      console.log('done!')
+      return successMsg('done!')
     })
   })
 
-  program
-    .command('create-service [svc]')
-    .description('Create a new Service')
-    .action(async function (svc, args) {
-      console.log('Creating a new Service')
-      if(!svc) throw new Error(`Can't create a Service without a name`)
-  
-      const sourceFile = path.join(__dirname, '..', 'prototype', 'templates', 'service.js')
-      const destFile = path.join(process.cwd(), 'app', 'services', svc + '.service.js')
-  
-      console.log('Creating Service...')
-      console.log('    dest: ' + destFile)
+program
+  .command('create-service [svc]')
+  .description('Create a new Service')
+  .action(async function (svc, args) {
+    console.log('Creating a new Service')
+    if (!svc) throw new Error('Can\'t create a Service without a name')
 
-      let sourceFileExists = await Panda.Utility.fileExists(sourceFile)
-      if(!sourceFileExists) throw new Error(`Source file (${sourceFile}) does not exist`)
-      let sourceFileContent = await Panda.Utility.getFile(sourceFile)
-  
-      let content = await Panda.Utility.template(sourceFileContent, {
-        svc: svc
-      })
-      let rs = await Panda.Utility.setFile(destFile, content)
-      if(rs === false) throw new Error(`Failed to write to file ${destFile}`)
+    const sourceFile = path.join(__dirname, '..', 'prototype', 'templates', 'service.js')
+    const svcDir = path.join(process.cwd(), 'app', 'services')
+    const destFile = path.join(process.cwd(), 'app', 'services', svc + '.service.js')
 
-      console.log('success!')
+    console.log('Creating Service...')
+    console.log('    dest: ' + destFile)
+
+    // check to make sure the directory exists
+    const svcDirExists = await Panda.Utility.fileExists(svcDir)
+    if (!svcDirExists) return errorMsg(`Service directory (${svcDir}) does not exist`)
+
+    const sourceFileExists = await Panda.Utility.fileExists(sourceFile)
+    if (!sourceFileExists) throw new Error(`Source file (${sourceFile}) does not exist`)
+    const sourceFileContent = await Panda.Utility.getFile(sourceFile)
+
+    const content = await Panda.Utility.template(sourceFileContent, {
+      svc: svc
     })
+    const rs = await Panda.Utility.setFile(destFile, content)
+    if (rs === false) return errorMsg(`Failed to write to file ${destFile}`)
+
+    //console.log('success!')
+    successMsg(`SUCCESS!`)
+  })
+
+  function errorMsg (err) {
+    return console.log(`\x1b[31mERROR: ${err}\x1b[0m`)
+  }
+
+  function successMsg (err) {
+    return console.log(`\x1b[32m${err}\x1b[0m`)
+  }
 
 program.parse(process.argv)
