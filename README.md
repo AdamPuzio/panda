@@ -296,6 +296,30 @@ Next, update your app's `package.json` file to reflect that it should use the lo
 
 Finally, run `npm install` to install all Panda dependencies and ensure that it's referencing the local copy. Now, all changes made to the code in `lib/panda` will be reflected immediately. 
 
+### Logging
+
+Logging levels:
+* 0 - error
+* 1 - warn
+* 2 - info
+* 3 - http
+* 4 - verbose
+* 5 - debug
+* 6 - silly
+
+```js
+// create the logger
+const logger = Panda.getLogger('FOO')
+
+// method #1: a simpmle logger.log() and use the default level
+logger.log(`log message`)
+
+// method #2: call logger.log() and provide a level
+logger.log('info', `log message`)
+
+// method #3: call a specific method for a level
+logger.error(`error message`)
+```
 
 ## License
 
