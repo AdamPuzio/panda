@@ -1,6 +1,8 @@
 'use strict'
 
 const ExtendableError = require('es6-error')
+const ERR_NO_TOKEN = 'NO_TOKEN'
+const ERR_INVALID_TOKEN = 'INVALID_TOKEN'
 
 /**
  * Base Panda Error class
@@ -160,5 +162,7 @@ module.exports = {
   PageNotFoundError,
   ValidationError,
   UnauthorizedError,
-  ForbiddenError
+  ForbiddenError,
+	ERR_NO_TOKEN,
+	ERR_INVALID_TOKEN
 }
