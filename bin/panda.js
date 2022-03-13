@@ -41,11 +41,15 @@ program
 program
   .command('create-app')
   .description('Create a new App directory')
-  .action(function (args) {
+  .action(async function (args) {
     console.log('Creating a new App')
 
     const sourceDir = path.join(__dirname, '..', 'prototype', 'site', 'app')
     const destDir = path.join(process.cwd(), 'app')
+
+    // check to make sure the destination directory does NOT exist
+    const destDirExists = await Panda.Utility.fileExists(destDir)
+    if (destDirExists) return errorMsg(`App source directory (${destDir}) already exists, unable to overwrite`)
 
     console.log('Copying app directory structure...')
     console.log('    dest: ' + destDir)
@@ -85,7 +89,6 @@ program
     const rs = await Panda.Utility.setFile(destFile, content)
     if (rs === false) return errorMsg(`Failed to write to file ${destFile}`)
 
-    //console.log('success!')
     successMsg(`SUCCESS!`)
   })
 
@@ -93,8 +96,9 @@ program
     return console.log(`\x1b[31mERROR: ${err}\x1b[0m`)
   }
 
-  function successMsg (err) {
-    return console.log(`\x1b[32m${err}\x1b[0m`)
+  function successMsg (msg) {
+    if(!msg) msg = 'SUCCESS!'
+    return console.log(`\x1b[32m${msg}\x1b[0m`)
   }
 
 program.parse(process.argv)
