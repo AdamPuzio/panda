@@ -66,7 +66,7 @@ program
   .description('Create a new Service')
   .action(async function (svc, args) {
     console.log('Creating a new Service')
-    if (!svc) throw new Error('Can\'t create a Service without a name')
+    if (!svc) return errorMsg('Can\'t create a Service without a name')
 
     const sourceFile = path.join(__dirname, '..', 'prototype', 'templates', 'service.js')
     const svcDir = path.join(process.cwd(), 'app', 'services')
@@ -91,6 +91,40 @@ program
 
     successMsg(`SUCCESS!`)
   })
+
+  program
+    .command('create-route [rpath]')
+    .description('Create a new Route')
+    .action(async function (rpath, args) {
+      console.log('Creating a new Route')
+      if (!rpath) rpath = 'index'
+  
+      const sourceFile = path.join(__dirname, '..', 'prototype', 'templates', 'route.js')
+      const routesDir = path.join(process.cwd(), 'app', 'routes')
+      const destFile = path.join(process.cwd(), 'app', 'routes', rpath + '.js')
+  
+      console.log('Creating Route...')
+      console.log('    dest: ' + destFile)
+  
+      // check to make sure the route doesn't already exists
+      const destFileExists = await Panda.Utility.fileExists(destFile)
+      if (destFileExists) return errorMsg(`Route file (${destFile}) already exists, unable to overwrite`)
+  
+      // check to make sure the directory exists
+      const routesDirExists = await Panda.Utility.fileExists(routesDir)
+      if (!routesDirExists) return errorMsg(`Routes directory (${routesDir}) does not exist`)
+  
+      // check to make sure the source file exists
+      const sourceFileExists = await Panda.Utility.fileExists(sourceFile)
+      if (!sourceFileExists) throw new Error(`Source file (${sourceFile}) does not exist`)
+      const sourceFileContent = await Panda.Utility.getFile(sourceFile)
+  
+      const content = await Panda.Utility.template(sourceFileContent, {})
+      const rs = await Panda.Utility.setFile(destFile, content)
+      if (rs === false) return errorMsg(`Failed to write to file ${destFile}`)
+  
+      successMsg(`SUCCESS!`)
+    })
 
   function errorMsg (err) {
     return console.log(`\x1b[31mERROR: ${err}\x1b[0m`)

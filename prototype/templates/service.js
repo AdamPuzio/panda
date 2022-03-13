@@ -10,7 +10,5 @@ module.exports = {
 
   actions: {},
 
-  methods: {
-
-  }
+  methods: {}
 }
