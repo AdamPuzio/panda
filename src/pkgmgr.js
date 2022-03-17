@@ -92,10 +92,11 @@ class PackageManager {
    *
    * @param {*} svcs
    */
-  async parseServiceList (svcs) {
+  async parseServiceList (svcs, ignore) {
     logger.debug('PackageManager.parseServiceList()')
     logger.silly(svcs)
     let svcList = []
+    let ignoreList = (ignore || '').split(',')
 
     // check if a string list needs to be split
     if (typeof svcs === 'string' && svcs !== '*') {
@@ -107,7 +108,10 @@ class PackageManager {
 
     if (svcs === '*') {
       // parse all Services from list
-      for (const [key, value] of Object.entries(this.Services)) { svcList = svcList.concat(value._files_) }
+      for (const [key, value] of Object.entries(this.Services)) { 
+        if (ignoreList.includes(key)) continue
+        svcList = svcList.concat(value._files_) 
+      }
     } else {
       // parse the list
       svcs.forEach(function (v) {

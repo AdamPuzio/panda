@@ -64,7 +64,16 @@ class Config {
       const cfgAbsFile = path.join(this.cfgObj.APP_PATH, cfgFile)
       if (fs.existsSync(cfgAbsFile)) {
         this.logger.info(`Loading config file at ${cfgFile}`)
-        this.cfgObj = Utility.loadJsonFile(cfgAbsFile)
+        let cfgExt = cfgFile.split('.').pop()
+        let cfgObj
+        if(cfgExt == 'js') {
+          cfgObj = require(cfgAbsFile)
+        } else if (cfgExt == 'json') {
+          cfgObj = await Utility.loadJsonFile(cfgAbsFile)
+        } else {
+          throw new Error(`Inproper extension for config file ${cfgFile}`)
+        }
+        this.cfgObj = Object.assign(this.cfgObj, cfgObj)
       } else {
         this.logger.debug(`No config file exists at ${cfgAbsFile}`)
       }

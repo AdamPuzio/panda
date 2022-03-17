@@ -52,10 +52,20 @@ This provides the list of services to start in this node, separated by commas
 
 Examples:
 ```bash
-# run the www and api services
-npx panda run --services www,api
-# run the 
-npx panda run --services www@2
+# run the web and api services
+npx panda run --services web,api
+# run v2 of the web service
+npx panda run --services web@2
+```
+
+`--ignore [services]` (default: '')
+
+This provides the list of services to NOT load (primarily used with * services), separated by commas
+
+Examples:
+```bash
+# run all services except for web
+npx panda run --ignore web
 ```
 
 `--repl`

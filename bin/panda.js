@@ -11,6 +11,7 @@ program
   .command('run [type]')
   .description('Run the app')
   .option('-s, --services [services]', 'The services to run', '*')
+  .option('-i, --ignore [services]', 'The services to ignore', '')
   .option('-r, --repl', 'Run in REPL mode', false)
   .option('-c, --config [cfg]', 'Specify a config file', 'panda.config.js')
   .option('-p, --pkgdir [dir]', 'Specify a directory to load packages from', 'node_modules')
@@ -21,7 +22,8 @@ program
 
     // load config file
     const opts = {
-      repl: args.repl
+      repl: args.repl,
+      ignore: args.ignore
     }
     await Panda.Config.load(args.config, opts)
 

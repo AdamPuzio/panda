@@ -39,7 +39,7 @@ class Core {
    */
   async runBroker (svcs, opts = {}) {
     logger.debug('Core.runBroker()')
-    const svcList = await PackageManager.parseServiceList(svcs)
+    const svcList = await PackageManager.parseServiceList(svcs, opts.ignore)
 
     // Create a ServiceBroker
     const broker = new ServiceBroker({
