@@ -24,6 +24,7 @@ class Core {
     try {
       logger.info(`Panda v${pandaVersion} is starting...`)
       this.options = Object.assign({}, defaultOptions, options)
+      this.broker = null
 
       if (!instance) instance = this
       return instance
@@ -55,8 +56,16 @@ class Core {
     })
 
     broker.start()
+    this.broker = broker
     if (opts.repl && opts.repl === true) broker.repl()
     return broker
+  }
+
+  /**
+   * Get the service broker
+   */
+  async getBroker () {
+    return this.broker
   }
 }
 
