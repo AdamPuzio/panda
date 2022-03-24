@@ -64,7 +64,7 @@ class Core {
   /**
    * Get the service broker
    */
-  async getBroker () {
+  getBroker () {
     return this.broker
   }
 }
