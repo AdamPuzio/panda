@@ -1,9 +1,8 @@
-
 'use strict'
 
 const path = require('path')
 const Glob = require('glob')
-const Config = require('./cfg').cfg
+const Config = require('./cfg').getConfig()
 const logger = require('./log').getLogger('PKGMGR')
 
 const defaultOptions = {
@@ -43,7 +42,7 @@ class PackageManager {
    */
   async scanPandaServiceDir () {
     logger.debug('PackageManager.scanPandaServiceDir()')
-    const svcDir = path.join(Config.PANDA_PATH, 'base', 'services')
+    const svcDir = path.join(Config.get('PANDA_PATH'), 'base', 'services')
     return this.scanServiceDir(svcDir)
   }
 
@@ -81,7 +80,7 @@ class PackageManager {
    */
   async scanPackageDir (dir) {
     logger.debug(`PackageManager.scanPackageDir(${dir})`)
-    const pkgDir = path.join(Config.APP_PATH, dir)
+    const pkgDir = path.join(Config.get('APP_PATH'), dir)
     const files = Glob.sync(path.join(dir, '/**/*/' + this.options.manifestFilename))
     logger.debug(files)
     return true

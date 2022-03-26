@@ -5,6 +5,7 @@ const Logger = require('./log')
 const Utility = require('./util')
 const path = require('path')
 const fs = require('fs')
+const CacheBase = require('cache-base')
 
 const defaultOptions = {}
 const defaultCfg = {
@@ -14,24 +15,6 @@ const defaultCfg = {
 }
 
 let instance = null
-
-// getter/setter handler so no exception is ever thrown
-const handler = {
-  get: function (target, name) {
-    if (typeof name === 'symbol') { return null }
-    if (!(name in target)) {
-      target[name] = new Proxy({}, {
-        get: function (target, name) {
-          return undefined
-        }
-      })
-    }
-    return target[name]
-  },
-  set (target, key, value) {
-    return true
-  }
-}
 
 /**
  * Config class
@@ -49,7 +32,8 @@ class Config {
       this.logger = Logger.getLogger('CONFIG', { level: 'debug' })
       this.options = Object.assign({}, defaultOptions, options)
       this.cfgObj = Object.assign({}, defaultCfg)
-      this.cfg = new Proxy(this.cfgObj, handler)
+      this.cfg = new CacheBase(this.cfgObj)
+      this._fileConfigs = {}
 
       if (!instance) instance = this
       return instance
@@ -58,36 +42,54 @@ class Config {
     }
   }
 
-  async load (cfgFile, cfg = {}) {
-    try {
-      this.logger.info('Loading Configuration')
-      const cfgAbsFile = path.join(this.cfgObj.APP_PATH, cfgFile)
-      if (fs.existsSync(cfgAbsFile)) {
-        this.logger.info(`Loading config file at ${cfgFile}`)
-        let cfgExt = cfgFile.split('.').pop()
-        let cfgObj
-        if(cfgExt == 'js') {
-          cfgObj = require(cfgAbsFile)
-        } else if (cfgExt == 'json') {
-          cfgObj = await Utility.loadJsonFile(cfgAbsFile)
-        } else {
-          throw new Error(`Inproper extension for config file ${cfgFile}`)
-        }
-        this.cfgObj = Object.assign(this.cfgObj, cfgObj)
-      } else {
-        this.logger.debug(`No config file exists at ${cfgAbsFile}`)
-      }
-    } catch (e) {
-      this.logger.info(`Could not load config file ${cfgFile}`)
+  /**
+   * Load a configuration file
+   * 
+   * @param {string} cfgFile - the path to load the config file from, relative to APP_PATH
+   * @returns 
+   */
+  async load (cfgFile) {
+    this.logger.debug(`Loading Configuration`)
+    // get absolute path and check it exists
+    const cfgAbsFile = path.join(this.cfgObj.APP_PATH, cfgFile)
+    if (!fs.existsSync(cfgAbsFile)) {
+      this.logger.debug(`  config file (${cfgAbsFile}) doesn't exist`)
+      return this.cfg
     }
 
-    this.cfgObj = Object.assign(this.cfgObj, cfg)
+    // config file exists, load it
+    this.logger.info(`Loading config file at ${cfgFile}`)
+    let cfgExt = cfgFile.split('.').pop()
+    let cfgObj
+    if(cfgExt == 'js') { // .js file, require it
+      cfgObj = require(cfgAbsFile)
+    } else if (cfgExt == 'json') { // json file, import it
+      cfgObj = await Utility.loadJsonFile(cfgAbsFile)
+    } else { // unknown type, throw error
+      throw new Error(`Inproper extension for config file ${cfgFile}`)
+    }
+    // load up the local file cache
+    this.fileConfigs[cfgFile] = {
+      relPath: cfgFile,
+      absPath: cfgAbsFile,
+      fileExt: cfgExt,
+      content: cfgObj
+    }
+    // cfgObj becomes the default config + loaded config
+    cfgObj = this.cfgObj = Object.assign(this.cfgObj, cfgObj)
+    // update the main cfg object
+    this.cfg = new CacheBase(cfgObj)
 
     return this.cfg
   }
 
-  async readCfg (cfgfile) {
-
+  /**
+   * Get the core configuration
+   * 
+   * @returns {CacheBase}
+   */
+  getConfig () {
+    return this.cfg
   }
 }
 

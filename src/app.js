@@ -3,7 +3,7 @@
 
 const PackageManager = require('./pkgmgr')
 const path = require('path')
-const Config = require('./cfg').cfg
+const Config = require('./cfg').getConfig()
 const logger = require('./log').getLogger('APP')
 const Utility = require('./util')
 const util = require('util')

@@ -17,6 +17,7 @@ module.exports = {
 
   // convenience functions & variables
   cfg: require('./src/cfg').cfg,
+  getConfig: require('./src/cfg').getConfig,
   getLogger: require('./src/log').getLogger,
   getBroker: require('./src/core').getBroker,
   router: require('./src/app').router,
