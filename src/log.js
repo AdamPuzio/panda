@@ -66,9 +66,7 @@ class Logger {
   getLogger (loggerId = '', opts = {}) {
     let logger = PandaLogger.cache.get(loggerId)
     if (logger) return logger
-    const Config = require('./cfg').getConfig()
-    const level = process.env.LOG_LEVEL || opts.level || Config.get('LOG_LEVEL') || 'debug'
-    // console.log(`Log level for ${loggerId}: ${level}`)
+    const level = process.env.LOG_LEVEL || opts.level || 'debug'
 
     logger = Winston.createLogger({
       level: level,
