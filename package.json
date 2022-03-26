@@ -7,7 +7,7 @@
     "panda": "panda --env --hot app/services",
     "style-guide": "standard",
     "style-guide-fix": "standard --fix",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "bin": {
     "panda": "./bin/panda.js"
@@ -29,6 +29,7 @@
     "node": ">= 10.x.x"
   },
   "devDependencies": {
+    "jest": "^27.5.1",
     "mocha": "^9.2.1",
     "standard": "^16.0.4"
   },
