@@ -41,6 +41,37 @@ program
   })
 
 program
+  .command('list-services')
+  .description('List all available services from this build')
+  .option('-c, --config [cfg]', 'Specify a config file', 'panda.config.js')
+  .option('-p, --pkgdir [dir]', 'Specify a directory to load packages from', 'node_modules')
+  .action(async function (args) {
+    console.log('Generating list of services...')
+
+    const baseDir = path.join(process.cwd())
+
+    await Panda.Config.load(args.config)
+
+    // scan the service directory
+    await Panda.PackageManager.scanPandaServiceDir()
+
+    // scan the package directory (pkgdir)
+    await Panda.PackageManager.scanPackageDir(args.pkgdir)
+
+    // scan the application directory (appdir)
+    await Panda.App.scanAppDir(path.join(baseDir, 'app'))
+
+    const svcList = await Panda.PackageManager.parseServiceList('*')
+    let svcObj = {}
+    svcList.forEach((val, key) => {
+      let svc = val.split('/').pop().replace('.service.js', '')
+      svcObj[svc] = val
+    })
+    console.log('Available Services:')
+    console.log(svcObj)
+  })
+
+program
   .command('create-app')
   .description('Create a new App directory')
   .action(async function (args) {

@@ -119,6 +119,8 @@ The Panda CLI is used to create and run your apps using `npx`.
 
 `npx panda run`
 
+`npx panda list-services`
+
 `npx panda create-app`
 
 `npx panda create-service [service]`
