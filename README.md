@@ -221,6 +221,8 @@ Within `/app/public` you can serve any static content you'd like. Just drop a fi
 
 Panda uses Moleculer as its service broker. Any services created in the `/app/services` directory with the name `{service}.service.js` will be registered into the system.
 
+The easiest way to create a service is by running `npx panda create-service {service-name}`, which will create a shell file in your `/app/services` directory.
+
 Example Service:
 
 ```js
@@ -288,16 +290,36 @@ As you can see, this is a very modular approach that can be written into your ow
 
 ### Local Setup
 
-When working on the core Panda library (not an application that uses Panda), install Panda in a local directory:
+When working on the core Panda library (not an application that uses Panda), there are 2 ways to create a reference from your project directory to your working Panda directory. In both instances, you will need to install Panda into a local directory:
 
 ```bash
-mkdir lib
 cd lib
 git clone git@github.com:AdamPuzio/panda.git
-cd ../
+cd panda
+npm install
 ```
 
-Next, update your app's `package.json` file to reflect that it should use the local directory instead of the NPM version in `node_modules`:
+#### NPM Link
+
+The first method is use `npm link` to create a symlink from the project to the working Panda instance:
+
+```bash
+cd lib/panda
+npm link
+cd ../../projects/myproject
+npm link panda
+```
+
+#### NPM Relative Reference
+
+The other way to do it is to create a relative reference to your working directory via `npm install`:
+
+```bash
+cd ../../projects/my-project
+npm install ../../lib/panda
+```
+
+Now in your app's `package.json` file you will find a reference to the local instance:
 
 ```js
 {
@@ -308,7 +330,7 @@ Next, update your app's `package.json` file to reflect that it should use the lo
 }
 ```
 
-Finally, run `npm install` to install all Panda dependencies and ensure that it's referencing the local copy. Now, all changes made to the code in `lib/panda` will be reflected immediately. 
+Don't forget to change the reference before committing your project code so it now points to a versioned instance of Panda.
 
 ### Logging
 
@@ -333,6 +355,14 @@ logger.log('info', `log message`)
 
 // method #3: call a specific method for a level
 logger.error(`error message`)
+```
+
+### Testing
+
+Panda uses [jest](https://jestjs.io/) as its built-in testing suite. To run the automated tests, from within the Panda directory run:
+
+```bash
+npm run test
 ```
 
 ## License
