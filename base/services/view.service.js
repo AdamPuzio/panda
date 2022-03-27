@@ -1,7 +1,6 @@
 'use strict'
 
 const Panda = require('../../')
-const { PandaError, PandaClientError, PageNotFoundError, ValidationError, UnauthorizedError, ForbiddenError } = Panda.Errors
 const logger = Panda.Logger.getLogger('VIEW')
 const ejs = require('ejs')
 const fs = require('fs/promises')

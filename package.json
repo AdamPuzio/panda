@@ -12,6 +12,12 @@
   "bin": {
     "panda": "./bin/panda.js"
   },
+  "standard": {
+    "ignore": [
+      "prototype/*",
+      "test/*"
+    ]
+  },
   "keywords": [],
   "author": "Adam T. Puzio <adam@puzio.me>",
   "contributors": [],

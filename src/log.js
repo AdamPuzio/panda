@@ -2,7 +2,7 @@
 
 // const Config = require('./cfg').cfg
 const Winston = require('winston')
-const { combine, splat, timestamp, printf, label } = Winston.format
+const { combine, splat, timestamp, label } = Winston.format
 
 const Colors = {
   Reset: '\x1b[0m',

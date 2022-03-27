@@ -80,7 +80,6 @@ class PackageManager {
    */
   async scanPackageDir (dir) {
     logger.debug(`PackageManager.scanPackageDir(${dir})`)
-    const pkgDir = path.join(Config.get('APP_PATH'), dir)
     const files = Glob.sync(path.join(dir, '/**/*/' + this.options.manifestFilename))
     logger.debug(files)
     return true
@@ -95,7 +94,7 @@ class PackageManager {
     logger.debug('PackageManager.parseServiceList()')
     logger.silly(svcs)
     let svcList = []
-    let ignoreList = (ignore || '').split(',')
+    const ignoreList = (ignore || '').split(',')
 
     // check if a string list needs to be split
     if (typeof svcs === 'string' && svcs !== '*') {
@@ -107,9 +106,9 @@ class PackageManager {
 
     if (svcs === '*') {
       // parse all Services from list
-      for (const [key, value] of Object.entries(this.Services)) { 
+      for (const [key, value] of Object.entries(this.Services)) {
         if (ignoreList.includes(key)) continue
-        svcList = svcList.concat(value._files_) 
+        svcList = svcList.concat(value._files_)
       }
     } else {
       // parse the list

@@ -34,10 +34,8 @@ module.exports = {
           break
         case err instanceof UnauthorizedError:
           return res.redirect('/login')
-          break
         case err instanceof ForbiddenError:
           return res.status(err.code).send('You do not have the proper permissions')
-          break
         case err instanceof PandaError:
         case err instanceof PandaClientError:
           break
@@ -60,7 +58,7 @@ module.exports = {
 
   async created () {
     const app = this.app = new Koa()
-    const broker = app.broker = app.context.broker = this.broker
+    app.broker = app.context.broker = this.broker
 
     app.use(cors())
     app.use(bodyParser())

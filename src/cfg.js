@@ -44,12 +44,12 @@ class Config {
 
   /**
    * Load a configuration file
-   * 
+   *
    * @param {string} cfgFile - the path to load the config file from, relative to APP_PATH
-   * @returns 
+   * @returns
    */
   async load (cfgFile) {
-    this.logger.debug(`Loading Configuration`)
+    this.logger.debug('Loading Configuration')
     // get absolute path and check it exists
     const cfgAbsFile = path.join(this.cfgObj.APP_PATH, cfgFile)
     if (!fs.existsSync(cfgAbsFile)) {
@@ -59,11 +59,11 @@ class Config {
 
     // config file exists, load it
     this.logger.info(`Loading config file at ${cfgFile}`)
-    let cfgExt = cfgFile.split('.').pop()
+    const cfgExt = cfgFile.split('.').pop()
     let cfgObj
-    if(cfgExt == 'js') { // .js file, require it
+    if (cfgExt === 'js') { // .js file, require it
       cfgObj = require(cfgAbsFile)
-    } else if (cfgExt == 'json') { // json file, import it
+    } else if (cfgExt === 'json') { // json file, import it
       cfgObj = await Utility.loadJsonFile(cfgAbsFile)
     } else { // unknown type, throw error
       throw new Error(`Inproper extension for config file ${cfgFile}`)
@@ -85,7 +85,7 @@ class Config {
 
   /**
    * Get the core configuration
-   * 
+   *
    * @returns {CacheBase}
    */
   getConfig () {

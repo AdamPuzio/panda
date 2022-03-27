@@ -27,7 +27,7 @@ const Utility = {
   setFile: async function (filePath, content, opts = {}) {
     opts = Object.assign({}, opts)
     try {
-      const saveContent = fs.writeFileSync(filePath, content, opts)
+      fs.writeFileSync(filePath, content, opts)
       return true
     } catch (err) {
       return false

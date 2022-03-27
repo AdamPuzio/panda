@@ -163,6 +163,7 @@ module.exports = {
   ValidationError,
   UnauthorizedError,
   ForbiddenError,
-	ERR_NO_TOKEN,
-	ERR_INVALID_TOKEN
+  recreateError,
+  ERR_NO_TOKEN,
+  ERR_INVALID_TOKEN
 }
