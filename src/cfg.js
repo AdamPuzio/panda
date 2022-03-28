@@ -69,16 +69,15 @@ class Config {
       throw new Error(`Inproper extension for config file ${cfgFile}`)
     }
     // load up the local file cache
-    this.fileConfigs[cfgFile] = {
+    this._fileConfigs[cfgFile] = {
       relPath: cfgFile,
       absPath: cfgAbsFile,
       fileExt: cfgExt,
       content: cfgObj
     }
     // cfgObj becomes the default config + loaded config
-    cfgObj = this.cfgObj = Object.assign(this.cfgObj, cfgObj)
-    // update the main cfg object
-    this.cfg = new CacheBase(cfgObj)
+    this.cfgObj = Object.assign(this.cfgObj, cfgObj)
+    this.cfg.set(cfgObj)
 
     return this.cfg
   }
