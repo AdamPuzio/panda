@@ -44,11 +44,7 @@ class Core {
 
     // Create a ServiceBroker
     const broker = new ServiceBroker({
-      logLevel: process.env.LOG_LEVEL || 'debug',
-      errorHandler (err, info) {
-        logger.error('BROKER ERROR HANDLER')
-        logger.error(err)
-      }
+      logLevel: process.env.LOG_LEVEL || 'debug'
     })
 
     svcList.forEach(function (svcFile) {
