@@ -44,7 +44,7 @@ class Core {
 
     // Create a ServiceBroker
     const broker = new ServiceBroker({
-      logLevel: process.env.LOG_LEVEL || 'debug'
+      logLevel: process.env.LOG_LEVEL || opts.logLevel || 'debug'
     })
 
     svcList.forEach(function (svcFile) {

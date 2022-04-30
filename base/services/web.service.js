@@ -9,7 +9,7 @@ const bodyParser = require('koa-bodyparser')
 const servePublic = require('koa-static')
 const cors = require('@koa/cors')
 const session = require('koa-session')
-const render = require('koa-ejs')
+const path = require('path')
 
 const localApp = Panda.App.app('web')
 
@@ -59,6 +59,7 @@ module.exports = {
   async created () {
     const app = this.app = new Koa()
     app.broker = app.context.broker = this.broker
+    const nodeEnv = process.env.NODE_ENV || 'development'
 
     app.use(cors())
     app.use(bodyParser())
@@ -67,14 +68,20 @@ module.exports = {
       logger.error('server error', err)
     }) */
 
+    // if views directory exists, let's use koa-views and ejs as our template renderer
     if (localApp.viewsDir) {
+      const render = require('../lib/koa-ejs')
       render(app, {
         root: localApp.viewsDir,
-        // layout: 'template',
-        layout: false,
-        viewExt: 'html',
-        cache: false,
-        debug: false
+        includer: function (originalPath, parsedPath) {
+          const filename = path.join(localApp.viewsDir, originalPath + '.html')
+          const fileExists = Panda.Utility.fileExistsSync(filename)
+          if (!fileExists) {
+            logger.error(`Trying to access a view that does not exist: ${originalPath}`)
+            const tpl = (nodeEnv === 'production') ? '-' : 'missing view: ' + originalPath
+            return { template: tpl }
+          }
+        }
       })
     }
 

@@ -1,5 +1,10 @@
 'use strict'
 
+const path = require('path')
+
+const pandaDir = path.join(__dirname)
+const baseDir = path.join(process.cwd())
+
 module.exports = {
   Core: require('./src/core'),
 
@@ -21,6 +26,9 @@ module.exports = {
   getLogger: require('./src/log').getLogger,
   getBroker: require('./src/core').getBroker,
   router: require('./src/app').router,
+
+  PANDA_DIR: pandaDir,
+  APP_PATH: baseDir,
 
   VERSION: require('./src/core').VERSION
 }

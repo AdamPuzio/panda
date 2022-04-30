@@ -15,6 +15,10 @@ const Utility = {
     return fs.existsSync(file)
   },
 
+  fileExistsSync: function (file) {
+    return fs.existsSync(file)
+  },
+
   relFileExists: async function (file) {
     return await Utility.fileExists(path.resolve(process.cwd(), file))
   },
