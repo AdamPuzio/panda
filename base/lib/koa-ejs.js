@@ -23,7 +23,7 @@ const ejs = require('ejs')
  * @type {Object}
  */
 const defaultSettings = {
-  cache: true,
+  cache: false,
   layout: 'layout',
   viewExt: 'html',
   locals: {},
