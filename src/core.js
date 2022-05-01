@@ -22,7 +22,6 @@ class Core {
    */
   constructor (options) {
     try {
-      logger.info(`Panda v${pandaVersion} is starting...`)
       this.options = Object.assign({}, defaultOptions, options)
       this.broker = null
 
