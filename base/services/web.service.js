@@ -131,11 +131,19 @@ module.exports = {
   },
 
   started () {
-    this.app.listen(Number(this.settings.port), err => {
-      if (err) { return this.broker.fatal(err) }
-
-      this.logger.info(`web server started on port ${this.settings.port}`)
-    })
+    console.log('this settings: ', this.settings);
+    console.log('port listening: ', this.settings.port);
+    if(this.app.listening){
+      this.logger.info(`app is listening to port already`)
+    }
+    else {
+      this.app.listen(Number(this.settings.port), err => {
+        if (err) { return this.broker.fatal(err) }
+  
+        this.logger.info(`web server started on port ${this.settings.port}`)
+      })
+    }
+  
   },
 
   stopped () {
