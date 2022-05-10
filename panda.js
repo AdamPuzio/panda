@@ -3,7 +3,7 @@
 const path = require('path')
 
 const pandaDir = path.join(__dirname)
-const baseDir = path.join(process.cwd())
+const baseDir = require('./src/core').determineProjectDirectory()
 
 module.exports = {
   Core: require('./src/core'),
@@ -13,8 +13,10 @@ module.exports = {
   // Singletons
   Config: require('./src/cfg'),
   Errors: require('./src/errors'),
+  Factory: require('./src/factory'),
   PackageManager: require('./src/pkgmgr'),
   Utility: require('./src/util'),
+  Wasp: require('./src/wasp'),
 
   // Classes
   App: require('./src/app'),
@@ -27,8 +29,9 @@ module.exports = {
   getBroker: require('./src/core').getBroker,
   router: require('./src/app').router,
 
-  PANDA_DIR: pandaDir,
+  PANDA_PATH: pandaDir,
   APP_PATH: baseDir,
+  CWD: process.cwd(),
 
   VERSION: require('./src/core').VERSION
 }
