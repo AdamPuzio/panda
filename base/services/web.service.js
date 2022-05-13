@@ -19,7 +19,8 @@ module.exports = {
 
   settings: {
     port: process.env.PORT || localApp.port || 5000,
-    tenancyMode: 'single'
+    tenancyMode: 'single',
+    server: false
   },
 
   dependencies: [

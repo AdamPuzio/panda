@@ -1,6 +1,6 @@
 {
   "name": "panda",
-  "version": "0.3.6",
+  "version": "0.3.7",
   "description": "Panda rapid application framework",
   "main": "./panda",
   "scripts": {
