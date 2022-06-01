@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
-const Panda = require('../')
-const Wasp = require('../src/wasp')
+const Panda = require('panda-core')
+const Wasp = Panda.Wasp
 const program = new Wasp.Command()
 
 program
@@ -12,7 +12,7 @@ program
     cmd.logger.debug(`command: panda`)
     let options = Wasp.parse(cmd)
 
-    cmd.logger.out('Time to share my vibe right now...', 'green')
+    cmd.logger.out('green', 'Time to share my vibe right now...')
 
     const url = 'https://www.youtube.com/watch?v=E5ONTXHS2mM'
 
