@@ -1,0 +1,63 @@
+{
+  "name": "panda",
+  "version": "0.5.2",
+  "description": "Panda rapid application framework",
+  "main": "panda.js",
+  "scripts": {
+    "panda": "panda",
+    "test": "jest",
+    "lint": "standard"
+  },
+  "bin": {
+    "panda": "./bin/panda.js"
+  },
+  "author": "Adam Puzio <adam@puzio.me>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AdamPuzio/panda.git"
+  },
+  "bugs": {
+    "url": "https://github.com/AdamPuzio/panda/issues"
+  },
+  "readmeFilename": "README.md",
+  "homepage": "https://github.com/AdamPuzio/panda",
+  "engines": {
+    "node": ">= 14.x.x"
+  },
+  "panda": {},
+  "standard": {
+    "ignore": [
+      "scaffold/*",
+      "test/*"
+    ]
+  },
+  "devDependencies": {
+    "jest": "^28.1.0",
+    "panda-dev": "^0.0.1",
+    "standard": "^17.0.0"
+  },
+  "dependencies": {
+    "@koa/cors": "^3.3.0",
+    "@koa/router": "^10.1.1",
+    "bson-objectid": "^2.0.3",
+    "cache-base": "^4.0.2",
+    "chalk": "^4.1.2",
+    "commander": "^9.2.0",
+    "ejs": "^3.1.8",
+    "fs-extra": "^10.1.0",
+    "glob": "^8.0.3",
+    "koa": "^2.13.4",
+    "koa-bodyparser": "^4.3.0",
+    "koa-mount": "^4.0.0",
+    "koa-session": "^6.2.0",
+    "koa-static": "^5.0.0",
+    "lodash": "^4.17.21",
+    "moleculer": "^0.14.21",
+    "moleculer-web": "^0.10.4",
+    "moment": "^2.29.3",
+    "panda-core": "^0.0.1",
+    "semver": "^7.3.7",
+    "winston": "^3.7.2"
+  }
+}
