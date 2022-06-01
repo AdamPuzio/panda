@@ -14,6 +14,7 @@ program
   .command('create-project', 'Create a new Project')
   .command('create-route', 'Create a new Route')
   .command('create-service', 'Create a new Service')
+  .command('ctx', 'Get information about the current Project and how it will be run')
   .command('install', 'Install a new Package')
   .command('project-info', 'Get information about the current Project and how it will be run')
   .command('run', 'Run an Application and all Services')
