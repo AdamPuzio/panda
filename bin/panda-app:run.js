@@ -8,16 +8,17 @@ const program = new Wasp.Command()
 const Hub = require('../src/hub')
 
 program
-  .description('Start all Applications and Services')
-  .action(async function (opts, cmd) {
-    this.debug('command: start')
+  .description('Run an Application and all Services')
+  .argument('<app>', 'The App to run')
+  .action(async function (app, opts, cmd) {
+    this.debug('command: run')
 
-    this.heading('Starting all Applications and Services')
+    this.heading(`Running the ${app} app and all Services`)
 
     // check to make sure we are in a Project directory
     await this.confirmInProject()
 
     // run it...
-    Hub.start()
+    Hub.start(app)
   })
   .parse(process.argv)

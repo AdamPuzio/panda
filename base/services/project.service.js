@@ -3,7 +3,7 @@
 const Project = require('../../src/project')
 
 module.exports = {
-  name: "project",
+  name: 'project',
   actions: {
 
     shrinkwrap: {

@@ -11,7 +11,7 @@ const path = require('path')
 const cache = new CacheBase()
 
 module.exports = {
-  name: "component",
+  name: 'component',
   actions: {
     get: {
       params: {
@@ -40,7 +40,7 @@ module.exports = {
       const cmp = cache.get(ns)
       if (!cmp) throw new Error(`${ctx.params.cmp} is not a valid component`)
       if (!cmp._webView) {
-        //const cmpPath = path.join(ctx.PROJECT_PATH, path.dirname(cmp.cmp.path))
+        // const cmpPath = path.join(ctx.PROJECT_PATH, path.dirname(cmp.cmp.path))
         const cmpPath = path.dirname(cmp.cmp.path)
         const webViewPath = path.resolve(cmpPath, cmp.cmp.config.webView)
         cmp._webView = fs.readFileSync(webViewPath, { encoding: 'utf8' })
@@ -51,7 +51,7 @@ module.exports = {
   },
 
   async created () {
-    //const shrinkwrap = await Project.shrinkwrap()
+    // const shrinkwrap = await Project.shrinkwrap()
     const shrinkwrap = await Project.live()
     shrinkwrap.components.forEach((cmp) => {
       cache.set(cmp.namespace, { cmp })

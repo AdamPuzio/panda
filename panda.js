@@ -1,17 +1,18 @@
 'use strict';
 
-((a,b) => { process.env.PANDA_PATHS = (a || '').concat((a || '').split(';').find(e => e.startsWith(`${b}=`)) ? '' : `${b}=${require('path').dirname(__filename)};`) })(process.env.PANDA_PATHS, 'panda')
+((a, b) => { process.env.PANDA_PATHS = (a || '').concat((a || '').split(';').find(e => e.startsWith(`${b}=`)) ? '' : `${b}=${require('path').dirname(__filename)};`) })(process.env.PANDA_PATHS, 'panda')
 
-const PandaCore = require('panda-core')
-
+const EventEmitter = require('events')
 let Logger
 
-class Panda {
-  constructor () {}
+class Panda extends EventEmitter {
+  constructor () {
+    if (Panda._instance) return Panda._instance
+    super()
+    Panda._instance = this
 
-  Core = PandaCore
-
-  ctx = PandaCore.ctx
+    this.Core = require('panda-core')
+  }
 
   getLogger () {
     if (!Logger) Logger = require('./src/logger')
@@ -23,8 +24,6 @@ class Panda {
   }
 
   get Router () { return require('@koa/router') }
-
-  get Wasp () { return PandaCore.Wasp }
 
   get Project () { return require('./src/project') }
 

@@ -1,8 +1,6 @@
 'use strict'
 
-const Panda = require('../../')
 const fs = require('fs')
-const path = require('path')
 const ejs = require('ejs')
 
 const defaultSettings = {
@@ -16,7 +14,7 @@ const defaultSettings = {
   async: true
 }
 
-const settings = {...{}, ...defaultSettings}
+const settings = { ...{}, ...defaultSettings }
 
 const viewCache = {}
 
@@ -50,12 +48,12 @@ exports = module.exports = function (app, appCfg) {
   // override `ejs` node_module `resolveInclude` function
   ejs.resolveInclude = function (name, filename, isDir) {
     return viewCache[name].path
-    /*if (!path.extname(name)) {
+    /* if (!path.extname(name)) {
       name += '.html'
     }
 
     const viewsDir = path.join(Panda.APP_PATH, 'app', 'views')
-    return path.join(viewsDir, name)*/
+    return path.join(viewsDir, name) */
   }
 
   /**
@@ -65,20 +63,20 @@ exports = module.exports = function (app, appCfg) {
    * @return {String} html
    */
   async function render (view, options) {
-    //view += settings.viewExt
-    //const viewPath = path.join(settings.root, view)
+    // view += settings.viewExt
+    // const viewPath = path.join(settings.root, view)
     const viewInfo = viewCache[view]
     // debug(`render: ${viewPath}`);
     // get from cache
-    if (settings.cache && cache[view]) {
-      return cache[view].call(options.scope, options)
+    if (settings.cache && settings.cache[view]) {
+      return settings.cache[view].call(options.scope, options)
     }
 
     const tpl = fs.readFileSync(viewInfo.path, 'utf8')
 
     const fn = ejs.compile(tpl, {
-      //filename: viewInfo.path,
-      //_with: settings._with,
+      // filename: viewInfo.path,
+      // _with: settings._with,
       compileDebug: settings.debug && settings.compileDebug,
       debug: settings.debug,
       delimiter: settings.delimiter,
@@ -87,13 +85,13 @@ exports = module.exports = function (app, appCfg) {
       outputFunctionName: settings.outputFunctionName
     })
     if (settings.cache) {
-      cache[viewInfo] = fn
+      settings.cache[viewInfo] = fn
     }
 
     return fn.call(options.scope, options)
   }
 
-  app.context.cmp = async function(cmp, cfg={}) {
+  app.context.cmp = async function (cmp, cfg = {}) {
     return await app.broker.call('component.render', { cmp, cfg })
   }
 

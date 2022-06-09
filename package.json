@@ -1,12 +1,13 @@
 {
   "name": "panda",
-  "version": "0.5.3",
+  "version": "0.5.4",
   "description": "Panda rapid application framework",
   "main": "panda.js",
   "scripts": {
     "panda": "panda",
     "test": "jest",
-    "lint": "standard"
+    "lint": "standard",
+    "lint-fix": "standard --fix"
   },
   "bin": {
     "panda": "./bin/panda.js"
@@ -55,8 +56,8 @@
     "moleculer": "^0.14.21",
     "moleculer-web": "^0.10.4",
     "moment": "^2.29.3",
-    "panda-core": "^0.0.2",
-    "panda-dev": "^0.0.2",
+    "panda-core": "^0.0.3",
+    "panda-dev": "^0.0.3",
     "semver": "^7.3.7",
     "winston": "^3.7.2"
   }
