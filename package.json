@@ -1,6 +1,6 @@
 {
   "name": "panda",
-  "version": "0.5.4",
+  "version": "0.6.0",
   "description": "Panda rapid application framework",
   "main": "panda.js",
   "scripts": {
