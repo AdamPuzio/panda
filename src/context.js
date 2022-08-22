@@ -196,7 +196,11 @@ const PandaContext = () => {
 
   return {
     ctx,
-    fns
+    fns,
+    ...{
+      locationTest,
+      path: pathFn
+    }
   }
 }
 
