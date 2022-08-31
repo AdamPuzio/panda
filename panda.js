@@ -4,6 +4,7 @@
 
 const EventEmitter = require('events')
 const Context = require('./src/context')
+const Utility = require('./src/utility')
 
 /**
  * Panda
@@ -21,6 +22,17 @@ class Panda extends EventEmitter {
 
     // emit init
     this.emit('init', this)
+
+    // return a Proxy so we can fetch dynamic entities
+    return new Proxy(this, {
+      get(target, key, receiver) {
+        if (Reflect.has(target, key, receiver))
+          return Reflect.get(target, key)
+        const entity = target.entity(key)
+        if (entity) return entity
+        return undefined
+      }
+    })
   }
 
   class = {
@@ -29,22 +41,42 @@ class Panda extends EventEmitter {
   }
 
   get Context () { return Context }
+  get Factory () { return require('./src/factory') }
   get Hub () { return require('./src/hub') }
   get Logger () { return require('./src/logger') }
   get Terminal () { return require('./src/terminal') }
-  get Utility () { return require('./src/utility') }
+  get Utility () { return Utility }
 
   get ctx () { return Context.ctx }
 
   get Router () { return require('@koa/router') }
 
   /**
+   * Fetch an Entity by type
    * 
-   * @param {String} entity the name of the entity
+   * @param {String} entity the name of the entity type
    * @returns entity class
    */
   entity (entity) {
-    return require(`./src/entity/${entity}`)
+    const name = Utility.pascalify(entity)
+    const slug = Utility.slugify(entity)
+    if (!name in this._entities) return undefined
+    if (this._entities[name] !== null) return this._entities[name]
+    const ref = this._entities[name] = require(`./src/entity/${slug}`)
+    return ref
+  }
+
+  _entities = {
+    App: null,
+    Command: null,
+    Component: null,
+    Package: null,
+    Project: null,
+    Route: null,
+    Scaffold: null,
+    Service: null,
+    Static: null,
+    View: null
   }
 }
 

@@ -30,6 +30,9 @@ const PandaContext = () => {
     PACKAGE_PATH: null,
     PRIVATE_LABEL_PATH: null,
 
+    PROJECT_NAME: null,
+    PACKAGE_NAME: null,
+
     PANDA_VERSION: pandaPackageJson.version,
     PROJECT_VERSION: null,
     PACKAGE_VERSION: null,
@@ -64,6 +67,7 @@ const PandaContext = () => {
     ctx.PROJECT_PATH = cwd
     ctx.PACKAGES_PATH = path.join(cwd, 'node_modules')
     ctx.PROJECT_VERSION = require(path.join(cwd, 'package.json')).version
+    ctx.PROJECT_NAME = require(path.join(cwd, 'package.json')).name
   } else if (fs.existsSync(path.join(cwd, 'package.json'))) { // look for package.json
     // we're in something packaged up, let's find out what...
     const packageJson = require(path.join(cwd, 'package.json'))
@@ -84,6 +88,9 @@ const PandaContext = () => {
             // we're likely in a package
             ctx.inPackage = true
             ctx.context = 'inPackage'
+            ctx.PACKAGE_NAME = packageJson.name
+            ctx.PACKAGE_VERSION = packageJson.version
+            ctx.PACKAGE_PATH = cwd
           }
         }
     }
@@ -194,10 +201,20 @@ const PandaContext = () => {
     return true
   }
 
+  function generateConfirmFns (context) {
+    Object.keys(fns).forEach((k) => {
+      context[k] = (opts = {}) => {
+        opts = { ...{ onFail: 'exit' }, ...opts }
+        fns[k](opts)
+      }
+    })
+  }
+
   return {
     ctx,
     fns,
     ...{
+      generateConfirmFns,
       locationTest,
       path: pathFn
     }

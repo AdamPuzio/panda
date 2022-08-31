@@ -1,8 +1,9 @@
 'use strict'
 
 const Context = require('../context')
+const Factory = require('../factory')
 const Terminal = require('../terminal')
-const util = require('../utility')
+const Utility = require('../utility')
 const Logger = require('../logger')
 const path = require('path')
 const chalk = require('chalk')
@@ -10,6 +11,9 @@ const fs = require('fs-extra')
 const glob = require('util').promisify(require('glob'))
 const clargs = require('command-line-args')
 const clusage = require('command-line-usage')
+const inquirer = require('inquirer')
+
+const CommandParser = require('../etc/parse/command-help')
 
 /**
  * PandaCommand
@@ -19,8 +23,28 @@ class PandaCommand {
   color = chalk
   fun = true
 
-  data = {}
   commandsDir = ''
+  cmdStack = []
+
+  _cfgBase = {
+    command: '',
+    title: '',
+    description: '',
+    help: null,
+    hidden: false,
+    arguments: [],
+    options: [],
+    subcommandPattern: '**/*.js',
+    subcommands: false,
+    version: false,
+  }
+  _cfg = {}
+  cfg = {
+    hasSubcommands: false,
+    subcommands: {},
+    arguments: [],
+    options: []
+  }
 
   /**
    * PandaCommand constructor
@@ -29,40 +53,46 @@ class PandaCommand {
    * @param {Object} opts 
    * @returns 
    */
-  constructor (data, opts = {}) {
-    this.data = data = this._generateBaseConfig(data)
-    if (data.action) this.action = data.action
-
-    this._generateConfirmFns()
-
+  constructor (cfg) {
     this.logger = Logger.getLogger('Command')
-    Logger.generateLoggerFns(this)
     this.logger.silly(`initialize Command`)
+
+    this.init(cfg)
+
+    Context.generateConfirmFns(this)
 
     return this
   }
 
-  get options () {
-    return this.data.options || []
-  }
+  init (cfg={}) {
+    this._cfg = cfg = {...this._cfgBase, ...cfg}
+    const flds = ['command', 'description']
+    flds.forEach(i => { if(cfg[i]) this.cfg[i] = cfg[i] })
+    this.cmdStack.push(cfg.command)
+    if (cfg.action) this.action = cfg.action
 
-  async action (args, opts, etc) {
-    if (opts.version) return console.log(this.data.version)
-    if (!args.command) return this.generateHelp()
-    const cmd = this.getSubcommand(args.command)
-    if (args.command && opts.help) return cmd.generateHelp()
+    // parse the help string
+    const help = CommandParser.parseHelp(cfg.help)
 
-    cmd.parse(etc.argv)
+    const opts = [].concat(help, cfg.options)
+    opts.forEach(o => this.option(o) )
+
+    let args = cfg.arguments
+    if (typeof args === 'string') args = CommandParser.parseArgString(args)
+    args.forEach(a => this.argument(a))
+
+    const scs = this.getSubcommands()
+    scs.forEach(s => this.subcommand(s))
+
     return this
   }
 
   async parse (argv) {
     this.logger.silly('Command.parse()')
-    if (!argv) argv = process.argv
-    const args = this.processArguments()
-    const opts = this.processOptions()
 
-    const argMix = [].concat(args, opts)
+    if (!argv) argv = process.argv
+
+    const argMix = [].concat(this.cfg.arguments, this.cfg.options)
     const primaryParse = clargs(argMix, { argv, stopAtFirstUnknown: true })
 
     const all = Object.assign({}, primaryParse._all || primaryParse)
@@ -73,112 +103,155 @@ class PandaCommand {
     }
     const fnargs = [all, etc]
     // if any args are potentially available, add the args object first
-    if (args.length > 0) fnargs.unshift(primaryParse._args)
+    if (this.cfg.arguments.length > 0) fnargs.unshift(primaryParse._args)
     await this.action(...fnargs)
 
     return this
   }
 
-  processArguments (args) {
-    if (!args) args = this.data.arguments
-    const argObj = []
-    args.forEach((a) => {
-      argObj.push({
-        name: a.name,
-        defaultOption: a.subcommand === true,
-        multiple: typeof a.multiple === 'undefined' ? false : a.multiple,
-        group: '_args'
+  async parseScaffold (scaffoldType, opts={}) {
+    this.debug(`Command.parseScaffold(${scaffoldType})`)
+    if (!opts.scaffold) {
+      const scaffoldList = await Factory.getScaffoldList(scaffoldType)
+      const scaffoldListAdjusted = scaffoldList.map(scaff => {
+        return {
+          name: scaff.name,
+          value: scaff.path
+        }
       })
-    })
-    return argObj
+      
+      if (scaffoldListAdjusted.length > 1) {
+        const scaffoldAsk = await inquirer.prompt([
+          {
+            type: 'list',
+            name: 'scaffold',
+            message: 'Project Scaffold:',
+            choices: scaffoldListAdjusted
+          }
+        ])
+        opts.scaffold = scaffoldAsk.scaffold
+      } else if (scaffoldListAdjusted.length === 1) {
+        opts.scaffold = scaffoldListAdjusted[0].value
+      } else if (scaffoldListAdjusted.length === 0) {
+        throw new Error(`No scaffolds found for ${Utility.nameify(scaffoldType)}s`)
+      }
+    }
+    const scaffold = await Factory.getScaffold(opts.scaffold)
+    if (!scaffold) throw new Error(`${opts.scaffold} is not a valid scaffold`)
+    const answers = await inquirer.prompt(scaffold.interface, opts)
+    await scaffold.build(answers)
+    return
   }
 
-  processCommands (commands) {
-    if (!commands) commands = this.data.commands
-    const cmdlist = []
-    commands.forEach(el => {
-      if (el.hidden === true) return
-      cmdlist.push({
-        name: el.command,
-        summary: el.description
-      })
-    })
-    return cmdlist
+  async action (args, opts, etc) {
+    if (opts.version) return console.log(this._cfg.version || 'version unavailable')
+    if (!args.command) return this.generateHelp()
+    const cmd = this.getSubcommand(args.command)
+    if (args.command && opts.help) return cmd.generateHelp()
+
+    cmd.parse(etc.argv)
+    return this
   }
 
-  processOptions (options) {
-    if (!options) options = this.data.options
-    if (!Array.isArray(options)) throw Error(`Options must be an array`)
-    const opts = []
-    options.forEach(el => {
-      const obj = util.pick(el, {
-        option: 'name',
-        description: 'description',
-        group: 'group',
-        alias: 'alias',
-        type: 'type'
-      })
-      if (obj.type && typeof obj.type === 'string') obj.type = global[obj.type]
-      opts.push(obj)
+  argument (arg) {
+    arg = {...{
+      name: arg.name,
+      subcommand: false,
+      defaultOption: arg.defaultOption === true || arg.subcommand === true,
+      multiple: false,
+      group: '_args'
+    }, ...arg}
+
+    if (arg.subcommand === true) this.cfg.hasSubcommands = true
+    
+    this.cfg.arguments.push(arg)
+
+    return this
+  }
+
+  option (opt) {
+    // ToDo: check for string and parse
+    if (!opt.name) throw new Error(`Options require name`)
+    const match = this.cfg.options.findIndex(({ name }) => name === opt.name)
+    
+    if (match !== -1) {
+      this.cfg.options[match] = {...this.cfg.options[match], ...opt}
+    } else {
+      this.cfg.options.push(opt)
+    }
+
+    return this
+  }
+
+  subcommand (command) {
+    const cfg = command.cfg
+    command.cmdStack = [].concat(this.cmdStack, command.cmdStack)
+    this.cfg.subcommands[cfg.command] = command
+    return this
+  }
+
+  getSubcommands () {
+    const subcommands = []
+    if (this.cfg.hasSubcommands === false) return []
+    const mainDir = this.commandsDir || path.dirname(require.main.filename)
+    const options = { ignore: [require.main.filename] }
+    const pattern = this._cfg.subcommandPattern
+    const patternPath = path.join(mainDir, pattern)
+    const matches = glob.sync(patternPath, options)
+    matches.forEach(file => {
+      const ref = require(file)
+      if(ref.__terminalType !== 'command') return
+      this.subcommand(ref)
     })
-    return opts
+    return subcommands
   }
 
   getSubcommand (command) {
     const mainDir = this.commandsDir || path.dirname(require.main.filename)
 
-    // ToDo: allow commands list to apply a custom filename
-    const cmdfile = command.replace(':', '--')
-    const filename = path.join(mainDir, `${this.data.command}-${cmdfile}`)
-    if (!fs.existsSync(filename + '.js')) {
-      this.exitError(`Command file for ${command} does not exist: ${filename}.js`)
-    }
-    const cmd = require(filename)
+    const cmd = this.cfg.subcommands[command]
+    if (!cmd) throw new Error(`Subcommand ${command} not found`)
 
     return cmd
   }
 
+  /**
+   * Output a help section on --help
+   */
   generateHelp () {
-    const data = this.data
+    const data = this.cfg
     const sections = []
     let content = data.description
-    if (data.help) content += '\n\n' + data.help
-    sections.push({ header: data.title || `Command: ${data.command}`, content: content })
-    if (data.usage) sections.push({ header: 'Usage', content: data.usage })
-    if (data.options.length > 0) sections.push({ header: 'Options', optionList: this.processOptions(data.options) })
-    if (data.subcommands.length > 0) sections.push({ header: 'Commands', content: this.processCommands(data.subcommands) })
+    if (data.useStaticHelp === true) {
+      content += '\n' + data.help
+      if (data.helpAdd) content += '\n\n' + data.helpAdd
+      sections.push({ header: data.title || `Command: ${data.command}`, content: content })
+    } else {
+      if (data.helpAdd) content += '\n\n' + data.helpAdd
+      sections.push({ header: data.title || `Command: ${data.command}`, content: content })
+      if (data.usage) sections.push({ header: 'Usage', content: data.usage })
+      const argStr = CommandParser.generateArgString(this.cmdStack, data.arguments)
+      sections.push({ header: 'Usage', content: argStr })
+      if (data.options.length > 0) sections.push({ header: 'Options', optionList: data.options })
+
+      if (data.hasSubcommands) sections.push({ header: 'Commands', content: CommandParser.generateCommandList(data.subcommands) })
+    }
     console.log(clusage(sections))
     process.exit()
   }
 
-  _generateBaseConfig (data) {
-    return {...{
-      command: '',
-      title: '',
-      description: '',
-      hidden: false,
-      arguments: [],
-      subcommands: [],
-      options: []
-    }, ...data}
+  async locationTest (locRef, opts = {}) {
+    opts = { ...{ onFail: 'throw' }, ...opts }
+    await Context.locationTest(locRef, opts)
+      .catch((err) => {
+        this.exitError(err, err.toString())
+      })
   }
 
-  _generateConfirmFns () {
-    const fns = Context.fns
-    Object.keys(fns).forEach((k) => {
-      this[k] = (opts = {}) => {
-        opts = { ...{ onFail: 'throw' }, ...opts }
-        Context.fns[k](opts)
-          .catch((err) => {
-            this.exitError(err, err.toString())
-          })
-      }
-    })
-  }
 
   spacer () { console.log() }
-  clear () { process.stdout.write(process.platform === 'win32' ? '\x1B[2J\x1B[0f' : '\x1B[2J\x1B[3J\x1B[H') }
-  out (msg, opts = {}) {
+  //clear () { process.stdout.write(process.platform === 'win32' ? '\x1B[2J\x1B[0f' : '\x1B[2J\x1B[3J\x1B[H') }
+  log (msg, opts = {}) {
     opts = {
       ...{
         level: true,
@@ -188,13 +261,18 @@ class PandaCommand {
     }
     if (this.test(opts.level)) console.log(this.style(opts.styles)(msg))
   }
+  out (msg, opts={}) { this.log(msg, opts) }
+  debug (msg, opts={}) { return this.logger.debug(msg, opts) }
+  success (msg, opts={}) { return this.logger.info(msg, opts) }
   test (level, levelAt) { return this.logger.test(...arguments) }
 
   exitError (err, msg) {
-    if (msg) this.error(msg)
+    if (msg) this.logger.error(msg || err.toString())
 
     if (this.test('debug')) console.log(err)
     else if (!msg) this.error(err)
+    else if (typeof err.toString !== 'undefined') this.logger.error(err.toString())
+    this.spacer()
     process.exit()
   }
 

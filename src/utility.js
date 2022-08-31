@@ -7,9 +7,25 @@ const moment = require('moment')
 const clargs = require('command-line-args')
 const chalk = require('chalk')
 
+function merge (source, target) {
+  for (const [key, val] of Object.entries(source)) {
+    if (val !== null && typeof val === `object`) {
+      if (target[key] === undefined) {
+        target[key] = new val.__proto__.constructor()
+      }
+      merge(val, target[key])
+    } else {
+      target[key] = val
+    }
+  }
+  return target
+}
+
 module.exports = {
   _,
   glob,
+  
+  merge,
 
   methodMap (source, target, map) {
     // if it's an Array, make it an Object
@@ -75,5 +91,16 @@ module.exports = {
   camelify (v) { return _.camelCase(v) }, // becomesThis
   pascalify (v) { return _.upperFirst(_.camelCase(v)) }, // BecomesThis
   snakeify (v) { return _.snakeCase(v) }, // becomes_this
-  envify (v) { return _.snakeCase(v).toUpperCase() } // BECOMES_THIS
+  envify (v) { return _.snakeCase(v).toUpperCase() }, // BECOMES_THIS,
+
+  allify (v) {
+    return {
+      slug: _.kebabCase(v),
+      name: _.startCase(v),
+      camel: _.camelCase(v),
+      pascal: _.upperFirst(_.camelCase(v)),
+      snake: _.snakeCase(v),
+      env: _.snakeCase(v).toUpperCase()
+    }
+  }
 }

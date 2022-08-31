@@ -12,6 +12,7 @@ const semver = require('semver')
 const glob = require('util').promisify(require('glob'))
 const clargs = require('command-line-args')
 const clusage = require('command-line-usage')
+const _ = require('lodash')
 
 /**
  * Terminal
@@ -80,6 +81,119 @@ const clusage = require('command-line-usage')
     if (this.test('debug')) console.log(err)
     else if (!msg) this.error(err)
     process.exit()
+  }
+
+  /**
+   * Creates a simple group-based table
+   * @param {*} data 
+   * @param {*} opts 
+   * @returns 
+   */
+  groupTable (data, opts={}) {
+    opts = {
+      ...{
+        columns: {},
+        groupBy: '',
+        delimiter: '   '
+      },
+      ...opts
+    }
+
+    let cols = Object.keys(opts.columns)
+    cols = cols.concat([opts.groupBy])
+
+    const widths = Object.keys(opts.columns).map((col, index) => {
+      return Math.max(...data.map(row => `${row[col]}`.length))
+    })
+
+    const output = {}
+    
+    _.chain(data)
+    .groupBy(opts.groupBy)
+    .map((v, k) => {
+      return output[k] = _.map(v, (i) => _.pick(i, Object.keys(opts.columns))) 
+    })
+    .value()
+
+    Object.keys(output).forEach((k) => {
+      console.log(`${chalk.bold.blue('-- ' + _.startCase(k) + ' --')}`)
+      const colh = Object.values(opts.columns).map((col, index) => {
+        return `${col}`.padEnd(widths[index])
+      }).join(opts.delimiter)
+      console.log(chalk.dim.underline(colh))
+      Object.values(output[k]).map(row => {
+        const x =  Object.values(row).map((col, index) => `${col}`.padEnd(widths[index]))
+          .join(opts.delimiter)
+        console.log(x)
+      })
+      console.log()
+    })
+    return output
+  }
+
+  basicTable (arr, cfg={}) {
+    cfg = {...{
+      padding: 1,
+      header: true,
+      columnBorder: '  ',
+      headerBorder: true,
+      fieldList: null,
+      action: 'print'
+    }, ...cfg}
+
+    const keys = cfg.fieldList || arr.reduce((arr, o) => {
+      return Object.keys(o).reduce((a, k) => {
+        if (a.indexOf(k) == -1) a.push(k)
+        return a
+      }, arr)
+    }, [])
+    const keyMap = {}
+    keys.forEach(k => {
+      const vals = arr.map(a => a[k])
+      const maxLength = Math.max.apply(Math, vals.map(function (el) { return el ? el.length : 0 }))
+      keyMap[k] = {
+        full: maxLength,
+        max: maxLength + cfg.padding
+      }
+    })
+    const $underline = '\x1b[4m'
+    const $bold = '\x1b[1m'
+    const $reset = '\x1b[0m'
+    
+    const build = []
+    if (cfg.header) {
+      const row = []
+      keys.forEach(k => {
+        let col = ''.padStart(cfg.padding) + k.padEnd(keyMap[k].max)
+        col = $bold + col + $reset
+        if (cfg.headerBorder) col = $underline + col
+        row.push(col)
+      })
+      build.push(row)
+    }
+    arr.forEach((i) => {
+      const row = []
+      keys.forEach(k => {
+        const v = i[k] || ''
+        row.push(''.padStart(cfg.padding) + v.padEnd(keyMap[k].max))
+      })
+      build.push(row)
+    })
+
+    let output = ''
+    build.forEach(r => {
+      output += r.join(cfg.columnBorder) + '\n'
+    })
+
+    switch (cfg.action) {
+      case 'print': 
+        console.log(output)
+        break
+      case 'return':
+        return output
+      case 'build':
+        return build
+    }
   }
 }
 
