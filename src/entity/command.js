@@ -270,7 +270,7 @@ class PandaCommand {
     if (msg) this.logger.error(msg || err.toString())
 
     if (this.test('debug')) console.log(err)
-    else if (!msg) this.error(err)
+    else if (!msg) this.logger.error(err)
     else if (typeof err.toString !== 'undefined') this.logger.error(err.toString())
     this.spacer()
     process.exit()

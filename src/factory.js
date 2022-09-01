@@ -2,6 +2,8 @@
 
 const PandaSingleton = require('./class/singleton')
 const Context = require('./context')
+//const Utility = require('./utility')
+const _ = require('lodash')
 const ctx = Context.ctx
 const path = require('path')
 const fs = require('fs-extra')
@@ -100,7 +102,8 @@ class PandaFactory extends PandaSingleton {
       const [scaffType, scaffSlug] = scaffoldPath.split(path.sep)
       
       try {
-        const data = require(file).data()
+        const load = require(file)
+        const data = load.data()
         const ns = data.namespace
         scaffoldList.push({
           ...{
@@ -237,6 +240,7 @@ class PandaFactory extends PandaSingleton {
       version: '1.0.0',
       description: '',
       main: 'index.js',
+      bin: {},
       scripts: {
         start: 'node index'
       },
@@ -254,7 +258,32 @@ class PandaFactory extends PandaSingleton {
     // if a Private Label provides their own project base, use it
     if (pl.panda && pl.panda.projectBase) base = pl.panda.projectBase
 
-    return Utility.merge(base, data)
+    //return Utility._.merge(base, data)
+    return _.merge({}, base, data)
+  }
+
+  /**
+   * Apply tools to a package.json JSON object
+   * 
+   * @param {Object} pkg 
+   * @param {Object} tools 
+   * @returns 
+   */
+  async applyTools (pkg, tools = {}) {
+    if (!pkg.scripts) pkg.scripts = {}
+    if (tools.testTool) pkg.scripts.test = tools.testTool
+    if (tools.lintTool) pkg.scripts.lint = tools.lintTool
+    if (tools.cssTool) pkg.scripts.compileCss = tools.cssTool
+    if (tools.buildTool) pkg.scripts.build = tools.buildTool
+    if (!pkg.devDependencies) pkg.devDependencies = {}
+    
+    for (const [k, v] of Object.entries(tools)) {
+      if (v) {
+        const latest = await this.latestPackage(v)
+        pkg.devDependencies[v] = `^${latest}`
+      }
+    }
+    return pkg
   }
 
   /**
@@ -274,9 +303,28 @@ class PandaFactory extends PandaSingleton {
    * @param {String} dir directory to look for package.json
    * @returns
    */
-  async readPackageJson (dir = ctx.cwd) {
+  async readPackageJson (dir, opts = {}) {
+    if (!dir) dir = this.projectDir
     const file = path.join(dir, 'package.json')
-    return require(file)
+    try {
+      const json = require(file)
+      return json
+    } catch (e) {
+      if (opts.onFail === 'empty') return {}
+      throw e
+    }
+  }
+  
+  readPackageJsonSync (dir, opts = {}) {
+    if (!dir) dir = this.projectDir
+    const file = path.join(dir, 'package.json')
+    try {
+      const json = require(file)
+      return json
+    } catch (e) {
+      if (opts.onFail === 'empty') return {}
+      throw e
+    }
   }
 
   /**
@@ -307,7 +355,7 @@ class PandaFactory extends PandaSingleton {
    * @param {String} content
    * @param {Object} opts
    */
-  async writeProjectJson (content, dir = ctx.cwd) {
+  async writeProjectJson (content, dir = this.projectDir) {
     if (typeof content === 'string') content = JSON.parse(content)
     const file = path.join(dir, 'project.json')
     await fs.outputJSON(file, content, { spaces: 2 })

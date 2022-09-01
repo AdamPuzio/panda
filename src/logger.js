@@ -64,6 +64,7 @@ class PandaLogger extends EventEmitter {
   levelInfo = levelInfo
   levels = levels
   levelColors = levelColors
+  colors = chalk
 
   /**
    * PandaLogger constructor

@@ -7,25 +7,11 @@ const moment = require('moment')
 const clargs = require('command-line-args')
 const chalk = require('chalk')
 
-function merge (source, target) {
-  for (const [key, val] of Object.entries(source)) {
-    if (val !== null && typeof val === `object`) {
-      if (target[key] === undefined) {
-        target[key] = new val.__proto__.constructor()
-      }
-      merge(val, target[key])
-    } else {
-      target[key] = val
-    }
-  }
-  return target
-}
-
 module.exports = {
   _,
   glob,
   
-  merge,
+  merge: _.merge,
 
   methodMap (source, target, map) {
     // if it's an Array, make it an Object
