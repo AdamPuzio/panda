@@ -144,7 +144,7 @@ class PandaFactory extends PandaSingleton {
 
     // validate a package is passed and we're in a Project
     if (!pkg) throw new Error('Please provide a Package to install')
-    await ctx.confirmInProject()
+    await Context.fns.confirmInProject()
 
     const pkgPath = path.join(opts.baseDir, 'package.json')
 
@@ -205,7 +205,7 @@ class PandaFactory extends PandaSingleton {
 
     // validate a package is passed and we're in a Project
     if (!pkg) throw new Error('Please provide a Package to uninstall')
-    await ctx.confirmInProject()
+    await Context.fns.confirmInProject()
 
     // get package.json and confirm the pkg exists
     const packageJson = await this.readPackageJson()
