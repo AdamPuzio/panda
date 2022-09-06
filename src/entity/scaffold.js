@@ -6,6 +6,7 @@ const Factory = require('../factory')
 const Logger = require('../logger')
 const Context = require('../context')
 const ctx = Context.ctx
+const helpers = require('../etc/helpers/scaffold-helpers')
 const path = require('path')
 const fs = require('fs-extra')
 const ejs = require('ejs')
@@ -24,6 +25,7 @@ class PandaScaffold {
   }
 
   Factory = Factory
+  static helpers = helpers
 
   //namespace = null
   name = ''
