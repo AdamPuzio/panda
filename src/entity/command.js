@@ -93,9 +93,10 @@ class PandaCommand {
     if (!argv) argv = process.argv
 
     const argMix = [].concat(this.cfg.arguments, this.cfg.options)
-    const primaryParse = clargs(argMix, { argv, stopAtFirstUnknown: true })
+    const primaryParse = clargs(argMix, { argv, stopAtFirstUnknown: true, camelCase: true })
 
     const all = Object.assign({}, primaryParse._all || primaryParse)
+
     Object.keys(primaryParse._args || []).forEach(e => delete all[e])
     const etc = {
       argv: primaryParse._unknown || [],
