@@ -59,6 +59,9 @@ exports = module.exports = function (app, appCfg) {
    */
   async function render (view, options) {
     const viewInfo = viewCache[view]
+
+    if (!viewInfo) throw new Error(`View "${view}" does not exist`)
+
     // get from cache
     if (settings.cache && settings.cache[view]) {
       return settings.cache[view].call(options.scope, options)

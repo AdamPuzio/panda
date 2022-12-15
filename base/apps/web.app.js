@@ -89,9 +89,11 @@ module.exports = {
 
       appCfg.routes.forEach((route) => {
           logger.debug(`  ${route.live}`)
-          const relPath = path.dirname(route.relpath)
+          let relPath = path.dirname(route.relpath)
           const routeFile = require(route.live)
           if (relPath !== '/' && relPath !== '.') {
+            // in case our path doesn't start with a /
+            if (!relPath.startsWith('/')) relPath = '/' + relPath
             app.use(mount(relPath, routeFile.routes()))
           } else {
             app.use(routeFile.routes())
