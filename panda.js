@@ -78,6 +78,30 @@ class Panda extends EventEmitter {
     Static: null,
     View: null
   }
+
+  /**
+   * Cheap way to access dependencies
+   * 
+   * @returns {Object} list of modules
+   */
+  modules () {
+    return {
+      Koa: require('koa'),
+      bodyParser: require('koa-bodyparser'),
+      cors: require('@koa/cors'),
+      serve: require('koa-static'),
+      session: require('koa-session'),
+      mount: require('koa-mount'),
+      path: require('path'),
+      render: require('./base/lib/koa-render'),
+
+      chalk: require('chalk'),
+      dotenv: require('dotenv'),
+      ejs: require('ejs'),
+      glob: require('glob'),
+      inquirer: require('inquirer')
+    }
+  }
 }
 
 module.exports = new Panda()
