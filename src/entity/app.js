@@ -40,7 +40,7 @@ class PandaApp extends Entity {
     if (!buildObj.apps) buildObj.apps = []
     if (entityObj.apps) {
       await Promise.all(entityObj.apps.map(async (entity) => {
-        if (map[entity.app]) entity = {...map[entity.app], ...entity}
+        if (!entity.path && map[entity.app]) entity = {...map[entity.app], ...entity}
         entity = this.reduce(entity, pkg)
         if (!entity.name) entity.name = entity.app
         

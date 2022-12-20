@@ -180,6 +180,12 @@ class PandaHub extends PandaSingleton {
     const appInfo = pinfo.apps.find(el => el.name === app)
     if (!appInfo) throw new Error(`No app config available for ${app}`)
     function fn (entity) {
+      // if provided a list, check for a match
+      if (Array.isArray(entity.app)) {
+        for (let i=0; i<entity.app.length; i++) {
+          if (entity.app[i] === app) return true
+        }
+      }
       if (entity.app === app) return true
       if (entity.app === '*') return true
       if (app === 'web' && !entity.app) return true
