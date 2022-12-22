@@ -134,7 +134,7 @@ class PandaHub extends PandaSingleton {
     appList.forEach((appCfg) => {
       this.logger.debug(`  ${appCfg.name} app loaded`)
       const appPath = path.join(appCfg.live)
-      if (app === '*' || app === appCfg.name) broker.loadService(appPath)
+      if (app === '*' || app === appCfg.name || (Array.isArray(app) && app.includes(appCfg.name))) broker.loadService(appPath)
     })
 
     broker.start()
