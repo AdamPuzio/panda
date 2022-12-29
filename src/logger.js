@@ -317,7 +317,9 @@ class PandaLoggerInstance {
       },
       ...opts
     }
-    if (this.test(opts.level)) console.log(this.style(opts.styles)(msg))
+    let msgOut = msg
+    if (opts.styles) msgOut = this.style(opts.styles)(msg)
+    if (this.test(opts.level)) console.log(msgOut)
   }
 
   style (styles) {
