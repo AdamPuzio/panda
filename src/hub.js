@@ -77,6 +77,7 @@ class PandaHub extends PandaSingleton {
     if (typeof projectCfg === 'string') projectCfg = require(Utility.tpl(projectCfg, Context.ctx))
     this.Project = new Project(projectCfg)
     await this.Project.build()
+    return this.Project
   }
 
   /**
@@ -176,7 +177,8 @@ class PandaHub extends PandaSingleton {
    * @returns {Object} a list of apps, static directories, routes and views
    */
   getAppConfig (app) {
-    const pinfo = this._projectInfo
+    const pinfo = this._projectInfo || this.Project.info()
+    if (!pinfo) throw new Error('No Project loaded')
     const appInfo = pinfo.apps.find(el => el.name === app)
     if (!appInfo) throw new Error(`No app config available for ${app}`)
     function fn (entity) {
