@@ -6,6 +6,7 @@ const { v4: uuidv4 } = require('uuid')
 const moment = require('moment')
 const clargs = require('command-line-args')
 const chalk = require('chalk')
+const path = require('path')
 
 module.exports = {
   _,
@@ -66,7 +67,7 @@ module.exports = {
   },
 
   tpl (str, data={}) {
-    str = str.replace(new RegExp('{', 'g'), '${')
+    str = str.replace(new RegExp('{', 'g'), '${').replace(/\//g, path.sep)
     return new Function(...Object.keys(data), `return \`${str}\`;`)(...Object.values(data))
   },
 

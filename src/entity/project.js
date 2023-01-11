@@ -3,6 +3,7 @@
 const Panda = require('../../')
 const ctx = require('../context').ctx
 const Logger = require('../logger')
+const path = require('path')
 
 class PandaProject {
 
@@ -79,7 +80,7 @@ class PandaProject {
       ctx,
       data
     }
-    str = str.replace(new RegExp('{', 'g'), '${')
+    str = str.replace(new RegExp('{', 'g'), '${').replace(/\//g, path.sep)
     return new Function(...Object.keys(data), `return \`${str}\`;`)(...Object.values(data))
   }
 }

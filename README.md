@@ -1,6 +1,6 @@
 # Panda 
 
-Panda is a rapid application framework that makes spinning up new web applications quick and easy, while still allowing for scalability.
+Panda is a rapid application development framework and toolkit. The goal is to provide developers with the tools and processes to quickly and easily create applications that are flexible, scalable, fast and fun to develop. 
 
 Documentation: https://adampuzio.github.io/panda-docs/
 
@@ -16,12 +16,26 @@ While Panda has certain preferences in those tools and best practices, it allows
 
 The only dependency for Panda is NodeJS version 14 or greater. That's it. 
 
-### Global Installation
+### New Project Install
+
+The easiest way to install Panda is to run the following in your terminal:
+
+```bash
+npx create-panda-app new-app
+cd new-app
+npm start
+```
+
+Your application has now started and should immediately open in your browser. If not, you can manually go to [http://localhost:5000](http://localhost:5000)
+
+### Other Installation Methods
+
+#### Global Installation
 
 Installing Panda is a breeze:
 
 ```bash
-npm i -g panda-cli
+npm i -g get-panda
 ```
 
 That's it! By installing Panda globally, you now have access to the Panda CLI and Development Toolkit, which now allows you to start building and running your own applications in minutes:
@@ -34,8 +48,6 @@ panda project:start
 ```
 
 Your brand new application is up and running at [http://localhost:5000](http://localhost:5000)
-
-### Other Installation Methods
 
 #### As a Library
 
